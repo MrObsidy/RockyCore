@@ -27,6 +27,16 @@ public interface IGridUser {
 	
 	/**
 	 * 
+	 * Internal use.
+	 * 
+	 * @param id
+	 */
+	public void setID(int id);
+	
+	public int getID();
+	
+	/**
+	 * 
 	 * Get wheter this User is taking &ltT&gt from the grid, adding &ltT&gt to the
 	 * grid or completely ignore &ltT&gt activity on the Grid.
 	 * 

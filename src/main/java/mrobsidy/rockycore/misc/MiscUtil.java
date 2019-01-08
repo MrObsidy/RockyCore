@@ -26,4 +26,8 @@ public class MiscUtil {
 
 		return surroundingBlocks;
 	}
+	
+	public static Class getClassForName(String name) throws ClassNotFoundException{
+		return Class.forName(name);
+	}
 }

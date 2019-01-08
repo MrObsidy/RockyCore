@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.client.util;
+package mrobsidy.rockycore.util.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;

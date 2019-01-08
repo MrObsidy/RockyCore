@@ -1,14 +1,14 @@
 package mrobsidy.rockycore.init;
 
-import mrobsidy.rockycore.server.util.ServerRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import mrobsidy.rockycore.client.util.ClientRegistry;
 import mrobsidy.rockycore.gridnetworks.GridRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
+import mrobsidy.rockycore.util.client.ClientRegistry;
+import mrobsidy.rockycore.util.server.ServerRegistry;
 
 /**
  * 

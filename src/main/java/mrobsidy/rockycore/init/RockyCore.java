@@ -1,9 +1,9 @@
 package mrobsidy.rockycore.init;
 
-import mrobsidy.rockycore.client.util.ClientEvents;
 import mrobsidy.rockycore.misc.CommandRockyCore;
-import mrobsidy.rockycore.server.util.ServerEvents;
-import mrobsidy.rockycore.server.util.ServerGameDataSaver;
+import mrobsidy.rockycore.util.client.ClientEvents;
+import mrobsidy.rockycore.util.server.ServerEvents;
+import mrobsidy.rockycore.util.server.ServerGameDataSaver;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -38,7 +38,8 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		MinecraftForge.EVENT_BUS.register(new ServerEvents());
-		MinecraftForge.EVENT_BUS.register(new ClientEvents());
+		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
+			MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		RegistryRegistry.initAndReset();
 		RegistryRegistry.constructMiscRegistry();
 	}

@@ -2,29 +2,44 @@ package mrobsidy.rockycore.gridnetworks;
 
 import java.util.ArrayList;
 
+import mrobsidy.rockycore.misc.Debug;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 public class GridRegistry {
 	private ArrayList<GridManager> gridManagers = new ArrayList<GridManager>();
 	
-	public int registerGridManager(Class<? extends Grid> parClass){
-		gridManagers.add(new GridManager(parClass));
-		return gridManagers.size() - 1;
-	}
+	//public int registerGridManager(Class<? extends Grid> parClass){
+	//	GridManager manager = new GridManager(parClass);
+	//	return gridManagers.size() - 1;
+	//}
 	
 	public int registerGridManager(GridManager manager){
 		gridManagers.add(manager);
+		Debug.debug("Registered GridManager");
 		return gridManagers.size() - 1;
+	}
+	
+	public GridManager getGridManagerForClass(Class parClass){
+		GridManager foundManager = null;
+		
+		Debug.debug("GridManager for class " + parClass.getName() + " is being searched");
+		
+		for(GridManager manager : gridManagers){
+			if(manager.gridType == parClass){
+				foundManager = manager;
+			}
+		}
+		return foundManager;
 	}
 	
 	public ArrayList getGridManagers(){
 		return this.gridManagers;
 	}
 	
-	public ArrayList<NBTTagCompound> getSaveData(){
+	public NBTTagCompound getSaveData(){
 		
-		ArrayList<NBTTagCompound> saveCompound = new ArrayList<NBTTagCompound>();
+		NBTTagCompound saveCompound = new NBTTagCompound();
 		
 		for(GridManager gridManager : gridManagers){
 			NBTTagCompound gridManCompound = new NBTTagCompound();
@@ -44,7 +59,7 @@ public class GridRegistry {
 					
 					nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
 					
-					saveCompound.add(nodeCompound);
+					gridCompound.setTag("node_" + node.getID(), nodeCompound);
 				}
 				for (IGridUser user : grid.getUsers()){
 					NBTTagCompound userCompound = new NBTTagCompound();
@@ -63,20 +78,25 @@ public class GridRegistry {
 					userCompound.setInteger("userIOwest", user.getIOfunctionForSide(EnumFacing.WEST));
 					
 					userCompound.setInteger("userGridID", user.getGrid().ID);
-					saveCompound.add(userCompound);
+					gridCompound.setTag("user_" + user.getID(), userCompound);
 				}
 				
 				gridCompound.setInteger("gridID", grid.ID);
-				saveCompound.add(gridCompound);
+				gridManCompound.setTag("grid_" + grid.ID, gridCompound);
 			}
 			gridManCompound.setInteger("gridManID", gridManager.ID);
-			saveCompound.add(gridManCompound);
+			saveCompound.setTag("gridManager_" + gridManager.ID, gridManCompound);
+			saveCompound.setString("rockycore_DATA", "gridRegistrySaveData");
 		}
 		
 		return saveCompound;
 	}
 	
 	public void reassembleGrids(NBTTagCompound compound){
-		
+		do{
+			
+			
+			
+		} while (true);
 	}
 }

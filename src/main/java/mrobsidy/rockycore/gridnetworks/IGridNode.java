@@ -29,6 +29,14 @@ public interface IGridNode {
 	 */
 	public BlockPos getPosition();
 	
+	/**
+	 * 
+	 * Internal use.
+	 * 
+	 * @param id
+	 */
+	public void setID(int id);
+	public int getID();
 	
 	/**
 	 * 

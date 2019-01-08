@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.server.util;
+package mrobsidy.rockycore.util.server;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -6,6 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import mrobsidy.rockycore.init.RegistryRegistry;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * 
@@ -13,7 +17,7 @@ import java.io.ObjectOutputStream;
  * 
  * Very broken plus serialization is a pain in the you-know-where.
  * 
- * @deprecated
+ * 
  * @author alexa
  *
  */
@@ -56,5 +60,13 @@ public class ServerGameDataSaver {
 		} 
 		
 		return returner;
+	}
+	
+	public static ArrayList<NBTTagCompound> relay(){
+		ArrayList<NBTTagCompound> returnables = new ArrayList<NBTTagCompound>();
+		
+		returnables.add(RegistryRegistry.getGridRegistry().getSaveData());
+		
+		return returnables;
 	}
 }

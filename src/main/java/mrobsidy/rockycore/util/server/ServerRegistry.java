@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.server.util;
+package mrobsidy.rockycore.util.server;
 
 import net.minecraft.server.MinecraftServer;
 

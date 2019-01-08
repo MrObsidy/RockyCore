@@ -3,30 +3,36 @@ package mrobsidy.rockycore.gridnetworks;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import mrobsidy.rockycore.misc.Debug;
+
 public abstract class Grid{
 
-	private int capacity;
+	protected int capacity;
 	
-	private IGridNode mainNode;
+	protected IGridNode mainNode;
 	
-	private ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
+	protected ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
 	
-	private ArrayList<IGridUser> users = new ArrayList<IGridUser>();
+	protected ArrayList<IGridUser> users = new ArrayList<IGridUser>();
 	
-	private GridManager man;
+	//private GridManager man;
 	
-	public final int ID;
+	public int ID;
 	
 	/**
 	 * 
 	 * @param node
 	 */
-	public Grid(IGridNode node, GridManager man){
-		ID = man.register(this);
+	public Grid(IGridNode node /*, GridManager man*/){
+		//ID = man.register(this);
 		capacity = 0;
 		mainNode = node;
+		node.setID(0);
 		nodes.add(node);
-		this.man = man;
+		node.setGrid(this);
+		
+		Debug.debug("Created a Grid, main node: " + mainNode.toString() + " with an ID of: " + mainNode.getID());
+		//this.man = man;
 	}
 	
 	public ArrayList<IGridNode> getNodes(){
@@ -53,13 +59,16 @@ public abstract class Grid{
 		capacity += amount;
 	}
 	
-	void addUser(IGridUser user){
-		users.add(user);
+	public void addUser(IGridUser user){
+		Debug.debug("addUser method fired");
+		this.users.add(user);
 		user.setGrid(this);
+		user.setID(this.users.size() - 1);
 	}
 	
-	void addNode(IGridNode node){
-		nodes.add(node);
+	public void addNode(IGridNode node){
+		this.nodes.add(node);
 		node.setGrid(this);
+		node.setID(this.nodes.size() - 1);
 	}
 }

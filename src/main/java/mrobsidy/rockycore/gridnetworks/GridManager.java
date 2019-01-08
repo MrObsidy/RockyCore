@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,6 +37,10 @@ public class GridManager{
 		return thisGM;
 	}
 	
+	public Class getManagerClass(){
+		return this.gridType;
+	}
+	
 	public ArrayList<Grid> getGrids(){
 		return this.networks;
 	}
@@ -53,6 +58,8 @@ public class GridManager{
 		BlockPos blockPos = node.getPosition();	
 		int dim = node.getDimension();
 		
+		Debug.debug("Initiating node adding method");
+		
 		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
 		ArrayList<Grid> grids = new ArrayList<Grid>();
@@ -66,8 +73,9 @@ public class GridManager{
 			}
 		}
 		
+		Debug.debug("Grid was found: " + gridWasFound);
 		
-		if(gridWasFound){
+		if(gridWasFound && grids.size() == 1){
 			Grid biggestGrid = null;
 			int biggestGridSize = 0;
 				
@@ -78,29 +86,28 @@ public class GridManager{
 				}
 			}
 			biggestGrid.addNode(node);
+			Debug.debug("Added node " + node.getID() + " to Grid " + biggestGrid.ID);
+		} else if (gridWasFound && grids.size() < 1){
+			//TODO make this function
 		} else {
 			try {
-				Constructor constr = this.gridType.getConstructor(IGridNode.class, GridManager.class);
+				Constructor constr = this.gridType.getConstructor(IGridNode.class);
 				try {
-					networks.add((Grid) constr.newInstance(node, this));
+					Grid newGrid = (Grid) constr.newInstance(node);
+					networks.add(newGrid);
+					Debug.debug("Created a new network " + networks.get(networks.size() - 1));
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			//networks.add();
