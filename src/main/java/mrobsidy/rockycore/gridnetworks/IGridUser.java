@@ -33,6 +33,8 @@ public interface IGridUser {
 	 */
 	public void setID(int id);
 	
+	public Class getThisClass();
+	
 	public int getID();
 	
 	/**
@@ -44,6 +46,7 @@ public interface IGridUser {
 	 * @return 
 	 */
 	public int getIOfunctionForSide(EnumFacing direction);
+	public void setIOfunctionForSide(EnumFacing direction, int function);
 	
 	/**
 	 * 

@@ -4,8 +4,6 @@ import mrobsidy.rockycore.gridnetworks.Grid;
 import mrobsidy.rockycore.gridnetworks.GridManager;
 import mrobsidy.rockycore.gridnetworks.IGridNode;
 import mrobsidy.rockycore.init.RegistryRegistry;
-import mrobsidy.rockycore.test.GridTest;
-import mrobsidy.rockycore.test.ReferenceImplIGridNode;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -45,24 +43,15 @@ public class CommandRockyCore extends CommandBase{
 				
 				Debug.debug("Debug mode set to: " + Debug.debugMode);
 				Debug.debug("Please note that client mode debug doesn't work properly when on multiplayer servers.");
-			} else if (args[0].equalsIgnoreCase("test")){
-				if(args[1].equalsIgnoreCase("createNode")){
-					IGridNode node = new ReferenceImplIGridNode(new BlockPos(Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5])), sender.getCommandSenderEntity().dimension);
-					
-					//GridManager man = RegistryRegistry.getGridRegistry().getGridManagerForClass(GridTest.class);
-					
-					GridManager man = (GridManager) RegistryRegistry.getGridRegistry().getGridManagers().get(0);
-					
-					man.addNodeToNet(node);
-					
-					Debug.debug("Done with this: " + node.getGrid());
-				} else if (args[1].equalsIgnoreCase("createGridManager")){
-					//RegistryRegistry.getGridRegistry().registerGridManager(new GridManager(MiscUtil.getClassForName(args[2])));
-					RegistryRegistry.getGridRegistry().registerGridManager(new GridManager(GridTest.class));
-				}
 			}
 		} catch (Exception e){
 			//Don't print it, this will be put out evertime.
+			
+			Debug.debug(e.getMessage());
+			for(StackTraceElement message : e.getStackTrace()){
+				Debug.debug(message.toString());
+			}
+			
 			sender.sendMessage(new TextComponentString("Usage: /rockycore debugmode [console:client:server:off]"));
 		}
 	}

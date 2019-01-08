@@ -29,6 +29,8 @@ public interface IGridNode {
 	 */
 	public BlockPos getPosition();
 	
+	public void setPosition(BlockPos pos);
+	
 	/**
 	 * 
 	 * Internal use.
@@ -55,7 +57,6 @@ public interface IGridNode {
 	public void tick();
 	
 	public boolean isMainNode();
-
 	
 	/**
 	 * 

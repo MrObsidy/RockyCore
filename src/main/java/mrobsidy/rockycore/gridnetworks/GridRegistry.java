@@ -1,10 +1,13 @@
 package mrobsidy.rockycore.gridnetworks;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 import mrobsidy.rockycore.misc.Debug;
+import mrobsidy.rockycore.misc.MiscUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 public class GridRegistry {
 	private ArrayList<GridManager> gridManagers = new ArrayList<GridManager>();
@@ -58,6 +61,7 @@ public class GridRegistry {
 					nodeCompound.setInteger("nodeGridID", node.getGrid().ID);
 					
 					nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
+					nodeCompound.setString("nodeClasspath", node.getClass().getName());
 					
 					gridCompound.setTag("node_" + node.getID(), nodeCompound);
 				}
@@ -76,27 +80,94 @@ public class GridRegistry {
 					userCompound.setInteger("userIOeast", user.getIOfunctionForSide(EnumFacing.EAST));
 					userCompound.setInteger("userIOsouth", user.getIOfunctionForSide(EnumFacing.SOUTH));
 					userCompound.setInteger("userIOwest", user.getIOfunctionForSide(EnumFacing.WEST));
+					userCompound.setString("userClasspath", user.getClass().getName());
 					
 					userCompound.setInteger("userGridID", user.getGrid().ID);
 					gridCompound.setTag("user_" + user.getID(), userCompound);
 				}
+				gridCompound.setInteger("nodeCount", grid.getNodesSize());
+				gridCompound.setInteger("userCount", grid.getUsersSize());
+				
+				gridCompound.setString("gridClass", grid.getClass().getName());
 				
 				gridCompound.setInteger("gridID", grid.ID);
 				gridManCompound.setTag("grid_" + grid.ID, gridCompound);
 			}
 			gridManCompound.setInteger("gridManID", gridManager.ID);
 			saveCompound.setTag("gridManager_" + gridManager.ID, gridManCompound);
-			saveCompound.setString("rockycore_DATA", "gridRegistrySaveData");
+			gridManCompound.setInteger("gridCount", gridManager.getGrids().size());
 		}
+		saveCompound.setString("rockycore_DATA", "gridRegistrySaveData");
+		saveCompound.setInteger("gridManagerCount", gridManagers.size());
 		
 		return saveCompound;
 	}
 	
 	public void reassembleGrids(NBTTagCompound compound){
-		do{
+		try{
 			
+			for(int gM = 0; gM == compound.getInteger("gridManagerCount"); gM++){
+				NBTTagCompound gridManCompound = compound.getCompoundTag("gridManager_" + gM);
+				
+				GridManager man = null;
+				
+				for(int g = 0; g == gridManCompound.getInteger("gridCount"); g++){
+					NBTTagCompound gridCompound = gridManCompound.getCompoundTag("grid_" + g);
+					
+					if (man == null){
+						man = new GridManager(MiscUtil.getClassForName(gridCompound.getString("gridClass")));
+					}
+					
+					for(int n = 0; n == gridCompound.getInteger("nodeCount"); n++){
+						NBTTagCompound nodeCompound = gridCompound.getCompoundTag("node_" + n);
+						
+						BlockPos pos = new BlockPos(nodeCompound.getInteger("nodeX"), nodeCompound.getInteger("nodeY"), nodeCompound.getInteger("nodeZ"));
+						
+						int dim = nodeCompound.getInteger("nodeDim");
+						
+						int distToMainNode = nodeCompound.getInteger("distToMainNode");
+						
+						boolean isMainNode = nodeCompound.getBoolean("isMainNode");
+						
+						Class iGridNodeClass = MiscUtil.getClassForName(nodeCompound.getString("nodeClasspath"));
+						Constructor iGridNodeClassConstructor = iGridNodeClass.getConstructor(BlockPos.class, int.class, int.class, boolean.class);
+						
+						IGridNode node = (IGridNode) iGridNodeClassConstructor.newInstance(pos, dim, distToMainNode, isMainNode);
+						
+						man.addNodeToNet(node);
+					}
+					
+					for(int u = 0; u == gridCompound.getInteger(""); u++){
+						NBTTagCompound userCompound = gridCompound.getCompoundTag("node_" + u);
+					
+						BlockPos pos = new BlockPos(userCompound.getInteger("userX"), userCompound.getInteger("userY"), userCompound.getInteger("userZ"));
+						
+						int dim = userCompound.getInteger("nodeDim");
+						
+						Class iGridUserClass = MiscUtil.getClassForName(userCompound.getString("nodeClasspath"));
+						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(BlockPos.class, int.class, int.class, boolean.class);
+						
+						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(pos, dim);
+						
+						user.setIOfunctionForSide(EnumFacing.UP, userCompound.getInteger("userIOup"));
+						user.setIOfunctionForSide(EnumFacing.DOWN, userCompound.getInteger("userIOdown"));
+						user.setIOfunctionForSide(EnumFacing.NORTH, userCompound.getInteger("userIOnorth"));
+						user.setIOfunctionForSide(EnumFacing.EAST, userCompound.getInteger("userIOeast"));
+						user.setIOfunctionForSide(EnumFacing.SOUTH, userCompound.getInteger("userIOsouth"));
+						user.setIOfunctionForSide(EnumFacing.WEST, userCompound.getInteger("userIOwest"));
+						
+						man.addGridUserToNet(user);
+					
+					}	
+				}
+				
+				registerGridManager(man);
+				
+			}
 			
-			
-		} while (true);
+		} catch (Exception e){
+			Debug.debug("If this is the first time you load this world or if it's after an update that changed anything regarding nodes, ignore this error.");
+			e.printStackTrace();
+		}
 	}
 }

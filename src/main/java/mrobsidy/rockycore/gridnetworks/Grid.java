@@ -7,13 +7,13 @@ import mrobsidy.rockycore.misc.Debug;
 
 public abstract class Grid{
 
-	protected int capacity;
+	private int capacity;
 	
-	protected IGridNode mainNode;
+	private IGridNode mainNode;
 	
-	protected ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
+	private ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
 	
-	protected ArrayList<IGridUser> users = new ArrayList<IGridUser>();
+	private ArrayList<IGridUser> users = new ArrayList<IGridUser>();
 	
 	//private GridManager man;
 	
@@ -47,8 +47,18 @@ public abstract class Grid{
 		return this.mainNode;
 	}
 	
-	public int getSize(){
+	/**
+	 * 
+	 * Returns the amount of nodes.
+	 * 
+	 * @return
+	 */
+	public int getNodesSize(){
 		return nodes.size();
+	}
+	
+	public int getUsersSize(){
+		return users.size();
 	}
 	
 	public int getCapacity(){
@@ -59,14 +69,14 @@ public abstract class Grid{
 		capacity += amount;
 	}
 	
-	public void addUser(IGridUser user){
+	void addUser(IGridUser user){
 		Debug.debug("addUser method fired");
 		this.users.add(user);
 		user.setGrid(this);
 		user.setID(this.users.size() - 1);
 	}
 	
-	public void addNode(IGridNode node){
+	void addNode(IGridNode node){
 		this.nodes.add(node);
 		node.setGrid(this);
 		node.setID(this.nodes.size() - 1);

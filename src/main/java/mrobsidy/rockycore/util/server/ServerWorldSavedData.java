@@ -2,6 +2,8 @@ package mrobsidy.rockycore.util.server;
 
 import java.util.ArrayList;
 
+import mrobsidy.rockycore.gridnetworks.GridRegistry;
+import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.Debug;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.WorldSavedData;
@@ -31,6 +33,12 @@ public class ServerWorldSavedData extends WorldSavedData {
 		this.markDirty();
 	}
 	
+	/**
+	 * 
+	 * Probably won't work, I don't guarantee anything. 
+	 * 
+	 * @return
+	 */
 	public NBTTagCompound getSavedData(){
 		return this.savedData;
 	}
@@ -38,6 +46,8 @@ public class ServerWorldSavedData extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		savedData = nbt;
+		GridRegistry reg = RegistryRegistry.getGridRegistry();
+		reg.reassembleGrids(nbt);
 	}
 
 	@Override
