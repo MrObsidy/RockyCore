@@ -13,6 +13,7 @@ import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 public class GridManager{
@@ -72,16 +73,44 @@ public class GridManager{
 		Debug.debug("Initiating node adding method");
 
 		ArrayList<Grid> grids = new ArrayList<Grid>();
+		ArrayList<Integer> iterates = new ArrayList<Integer>();
 		
 		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
+		int iterate = 0;
 		for(Block block : surBl){
 			if(block instanceof IGridNode){
 				grids.add(this.getGridForNode((IGridNode) block));
 				gridWasFound = true;
+				iterates.add(new Integer(iterate));
 			}
+			iterate++;
 		}
 		
+		for(Integer fliterate : iterates){
+			
+			if (fliterate.intValue() == 0){
+				node.setConnectingDirection(EnumFacing.EAST, true);
+			} else if (fliterate.intValue() == 1){
+				node.setConnectingDirection(EnumFacing.WEST, true);
+			} else if (fliterate.intValue() == 2){
+				node.setConnectingDirection(EnumFacing.SOUTH, true);
+			} else if (fliterate.intValue() == 3){
+				node.setConnectingDirection(EnumFacing.NORTH, true);
+			} else if (fliterate.intValue() == 4){
+				node.setConnectingDirection(EnumFacing.UP, true);
+			} else if (fliterate.intValue() == 5){
+				node.setConnectingDirection(EnumFacing.DOWN, true);
+			} /* else {
+				throw new IllegalStateException("GridManager " + this.toString() + " somehow received sixth direction!");
+			} */
+			else {
+				Debug.debug("Somehow, GridManager " + this.toString() + " received a SEVENTH cardinal direction.");
+			}
+			
+			if(iterate > 1) node.setConnectingNode(true);
+			//node.setConnectingDirection();
+		}
 		
 		Debug.debug("Grid was found: " + gridWasFound);
 		
@@ -98,7 +127,7 @@ public class GridManager{
 			biggestGrid.addNode(node);
 			Debug.debug("Added node " + node.getID() + " to Grid " + biggestGrid.ID);
 		} else if (gridWasFound && grids.size() < 1){
-			//TODO make this function
+			mergeGrids(grids);
 		} else {
 			try {
 				Constructor constr = this.gridType.getConstructor();
@@ -124,6 +153,32 @@ public class GridManager{
 			}
 			//networks.add();
 		}
+	}
+	
+	/**
+	 * 
+	 * super WIP way of doing things, is buggy AF.
+	 * 
+	 * @param grids
+	 */
+	private void mergeGrids(ArrayList<Grid> grids){
+		Grid largestGrid = null;
+		int largestGridSize = 0;
+		
+		for(Grid grid : grids){
+			if(grid.getNodes().size() < largestGridSize){
+				largestGrid = grid;
+			}
+		}
+		
+		grids.remove(largestGrid);
+		
+		ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
+		
+		for (IGridNode node: nodes){
+			addNodeToNet(node);
+		}
+		
 	}
 	
 	public Grid getGridForNode(IGridNode node){

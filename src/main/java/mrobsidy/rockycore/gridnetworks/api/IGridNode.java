@@ -38,7 +38,7 @@ public interface IGridNode {
 	
 	public void tick();
 	
-	public EnumFacing[] getConnectionDirections();
+	public boolean getConnectionDirections(EnumFacing key);
 	
 	public void setConnectingDirection(EnumFacing connection, boolean isConnected);
 	

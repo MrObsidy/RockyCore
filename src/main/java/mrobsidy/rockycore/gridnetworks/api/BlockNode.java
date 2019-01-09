@@ -1,6 +1,7 @@
 package mrobsidy.rockycore.gridnetworks.api;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
 import net.minecraft.block.Block;
@@ -22,7 +23,7 @@ public abstract class BlockNode extends Block implements IGridNode {
 	private boolean isMainNode;
 	private int ID;
 	private static Class gridClass;
-	private EnumFacing[] conDirs = new EnumFacing[6];
+	private HashMap<EnumFacing, Boolean> conDirs = new HashMap<EnumFacing, Boolean>();
 	private boolean isConnectingNode;
 	
 	/**
@@ -36,6 +37,13 @@ public abstract class BlockNode extends Block implements IGridNode {
 		initMaterial = materialIn;
 	}
 	
+	/**
+	 * 
+	 * Use this when registering this BlockNode to the Minecraft Block Registry
+	 * 
+	 * @param materialIn
+	 * @param gridClass
+	 */
 	public BlockNode(Material materialIn, Class gridClass){
 		this(materialIn);
 		this.gridClass = gridClass;
@@ -55,6 +63,13 @@ public abstract class BlockNode extends Block implements IGridNode {
 		this(initMaterial);
 		this.pos = pos;
 		this.dim = dim;
+		this.conDirs.put(EnumFacing.UP, new Boolean(false));
+		this.conDirs.put(EnumFacing.DOWN, new Boolean(false));
+		this.conDirs.put(EnumFacing.NORTH, new Boolean(false));
+		this.conDirs.put(EnumFacing.EAST, new Boolean(false));
+		this.conDirs.put(EnumFacing.SOUTH, new Boolean(false));
+		this.conDirs.put(EnumFacing.WEST, new Boolean(false));
+		
 	}
 	
 	public Class getGridClass(){
@@ -120,28 +135,27 @@ public abstract class BlockNode extends Block implements IGridNode {
 
 	@Override
 	public void tick() {
-		
+		//TODO
 	}
 
 	@Override
-	public EnumFacing[] getConnectionDirections() {
-		return this.conDirs;
+	public boolean getConnectionDirections(EnumFacing key) {
+		return this.conDirs.get(key);
 	}
 
 	@Override
 	public void setConnectingNode(boolean isConNode) {
-		
+		this.isConnectingNode = isConNode;
 	}
 
 	@Override
 	public boolean getConnectingNode() {
-		return false;
+		return this.isConnectingNode;
 	}
 
 	@Override
 	public void setConnectingDirection(EnumFacing connection, boolean isConnected) {
-		// TODO Auto-generated method stub
-		
+		this.conDirs.put(connection, isConnected);
 	}
 	
 }
