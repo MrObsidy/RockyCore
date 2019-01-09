@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.api;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +23,7 @@ public interface IGridUser {
 	 * 
 	 * @return
 	 */
-	public int getDimension();
+	public int getDim();
 	
 	/**
 	 * 
@@ -32,8 +32,6 @@ public interface IGridUser {
 	 * @param id
 	 */
 	public void setID(int id);
-	
-	public Class getThisClass();
 	
 	public int getID();
 	
@@ -60,10 +58,6 @@ public interface IGridUser {
 	 * 
 	 */
 	public void setOrphan(boolean isOrphan);
-	
-	public void setGrid(Grid grid);
-	
-	public Grid getGrid();
 	
 	/**
 	 * 

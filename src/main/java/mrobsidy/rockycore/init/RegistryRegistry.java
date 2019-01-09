@@ -5,7 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import mrobsidy.rockycore.gridnetworks.GridRegistry;
+import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
 import mrobsidy.rockycore.util.client.ClientRegistry;
 import mrobsidy.rockycore.util.server.ServerRegistry;

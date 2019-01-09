@@ -1,8 +1,8 @@
 package mrobsidy.rockycore.misc;
 
-import mrobsidy.rockycore.gridnetworks.Grid;
-import mrobsidy.rockycore.gridnetworks.GridManager;
-import mrobsidy.rockycore.gridnetworks.IGridNode;
+import mrobsidy.rockycore.gridnetworks.api.Grid;
+import mrobsidy.rockycore.gridnetworks.api.IGridNode;
+import mrobsidy.rockycore.gridnetworks.internal.GridManager;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

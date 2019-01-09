@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.api;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -49,10 +49,6 @@ public interface IGridNode {
 	public void checkGrid();
 	
 	public int getDimension();
-	
-	public void setGrid(Grid grid);
-	
-	public Grid getGrid();
 	
 	public void tick();
 	

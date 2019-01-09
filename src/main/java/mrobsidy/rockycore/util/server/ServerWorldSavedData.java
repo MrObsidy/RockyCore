@@ -2,7 +2,7 @@ package mrobsidy.rockycore.util.server;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.gridnetworks.GridRegistry;
+import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.Debug;
 import net.minecraft.nbt.NBTTagCompound;

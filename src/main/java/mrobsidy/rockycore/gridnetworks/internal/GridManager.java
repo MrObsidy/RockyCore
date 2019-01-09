@@ -1,10 +1,13 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.internal;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import mrobsidy.rockycore.gridnetworks.api.Grid;
+import mrobsidy.rockycore.gridnetworks.api.IGridNode;
+import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
@@ -72,41 +75,13 @@ public class GridManager{
 		
 		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
-		
-		
 		for(Block block : surBl){
 			if(block instanceof IGridNode){
-				grids.add(((IGridNode) block).getGrid());
+				grids.add(this.getGridForNode((IGridNode) block));
 				gridWasFound = true;
 			}
 		}
 		
-		
-		
-
-		
-
-		
-//		BlockPos[] surBp = new BlockPos[6]; 
-//		
-//		surBp[0] = new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ());
-//		surBp[1] = new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ());
-//		surBp[2] = new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
-//		surBp[3] = new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ());
-//		surBp[4] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1);
-//		surBp[5] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1);
-//		
-//		for(Grid network : networks){
-//			for(IGridNode gridNode : network.getNodes()){
-//				BlockPos pos = gridNode.getPosition();
-//				for (BlockPos surBpUnpacked : surBp){
-//					if(pos.getX() == surBpUnpacked.getX() && pos.getY() == surBpUnpacked.getY() && pos.getZ() == surBpUnpacked.getZ()){
-//						gridWasFound = true;
-//						grids.add(network);
-//					}
-//				}
-//			}
-//		}
 		
 		Debug.debug("Grid was found: " + gridWasFound);
 		
@@ -150,11 +125,47 @@ public class GridManager{
 		}
 	}
 	
+	public Grid getGridForNode(IGridNode node){
+		Grid grid = null;
+			
+		BlockPos blockPos = node.getPosition();
+		
+		for(Grid network : networks){
+			for(IGridNode gridNode : network.getNodes()){
+				BlockPos pos = gridNode.getPosition();
+				if(pos.getX() == blockPos.getX() && pos.getY() == blockPos.getY() && pos.getZ() == blockPos.getZ() && node.getDimension() == gridNode.getDimension()){
+					return network;
+				}
+			}
+		}
+		
+		
+		return grid;
+	}
+	
+	public Grid getGridForUser(IGridUser user){
+		Grid grid = null;
+		
+		BlockPos blockPos = user.getPos();
+		
+		for(Grid network : networks){
+			for(IGridUser gridUser: network.getUsers()){
+				BlockPos pos = gridUser.getPos();
+				if(pos.getX() == blockPos.getX() && pos.getY() == blockPos.getY() && pos.getZ() == blockPos.getZ() && user.getDim() == gridUser.getDim()){
+					return network;
+				}
+			}
+		}
+		
+		
+		return grid;
+	}
+	
 	public void addGridUserToNet(IGridUser user){
 		user.setOrphan(false);
 		
 		BlockPos blockPos = user.getPos();	
-		int dim = user.getDimension();
+		int dim = user.getDim();
 		
 		/* Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		

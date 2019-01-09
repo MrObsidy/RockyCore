@@ -1,9 +1,8 @@
 package mrobsidy.rockycore.misc;
 
-import mrobsidy.rockycore.chatutil.ChatFormats;
-import mrobsidy.rockycore.chatutil.ClientChatMessages;
-import mrobsidy.rockycore.chatutil.ServerChatMessages;
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.util.client.ClientChatMessages;
+import mrobsidy.rockycore.util.server.ServerChatMessages;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 

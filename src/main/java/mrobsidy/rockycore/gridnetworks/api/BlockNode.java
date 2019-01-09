@@ -1,8 +1,15 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.api;
 
+import java.lang.reflect.InvocationTargetException;
+
+import mrobsidy.rockycore.init.RegistryRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class BlockNode extends Block implements IGridNode {
 
@@ -13,7 +20,7 @@ public abstract class BlockNode extends Block implements IGridNode {
 	private int distToMainNode;
 	private boolean isMainNode;
 	private int ID;
-	private Grid grid;
+	private static Class gridClass;
 	
 	/**
 	 * 
@@ -21,9 +28,14 @@ public abstract class BlockNode extends Block implements IGridNode {
 	 * 
 	 * @param materialIn
 	 */
-	public BlockNode(Material materialIn) {
+	private BlockNode(Material materialIn) {
 		super(materialIn);
 		initMaterial = materialIn;
+	}
+	
+	public BlockNode(Material materialIn, Class gridClass){
+		this(materialIn);
+		this.gridClass = gridClass;
 	}
 	
 	/**
@@ -36,12 +48,36 @@ public abstract class BlockNode extends Block implements IGridNode {
 	 * @param isMainNode - whether this is the main node
 	 */
 
-	public BlockNode(BlockPos pos, int dim, int distToMainNode, boolean isMainNode){
-		super(initMaterial);
+	public BlockNode(BlockPos pos, int dim){
+		this(initMaterial);
 		this.pos = pos;
 		this.dim = dim;
-		this.distToMainNode = distToMainNode;
-		this.isMainNode = isMainNode;
+	}
+	
+	public Class getGridClass(){
+		return this.gridClass;
+	}
+	
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack){
+		try {
+			BlockNode block = this.getClass().getConstructor(BlockPos.class, int.class).newInstance(pos, entity.dimension);
+			
+			RegistryRegistry.getGridRegistry().getGridManagerForClass(this.gridClass).addNodeToNet(block);
+			
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -82,16 +118,6 @@ public abstract class BlockNode extends Block implements IGridNode {
 	@Override
 	public int getDimension() {
 		return this.dim;
-	}
-
-	@Override
-	public void setGrid(Grid grid) {
-		this.grid = grid;
-	}
-
-	@Override
-	public Grid getGrid() {
-		return this.grid;
 	}
 
 	@Override

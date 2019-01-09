@@ -1,8 +1,11 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.internal;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
+import mrobsidy.rockycore.gridnetworks.api.Grid;
+import mrobsidy.rockycore.gridnetworks.api.IGridNode;
+import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,7 +61,7 @@ public class GridRegistry {
 					nodeCompound.setInteger("nodeDim", node.getDimension());
 					
 					nodeCompound.setInteger("nodeDistToMainNode", node.getDistanceToMainNode());
-					nodeCompound.setInteger("nodeGridID", node.getGrid().ID);
+					//nodeCompound.setInteger("nodeGridID", node.getGrid().ID);
 					
 					nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
 					nodeCompound.setString("nodeClasspath", node.getClass().getName());
@@ -72,7 +75,7 @@ public class GridRegistry {
 					userCompound.setInteger("userX", user.getPos().getX());
 					userCompound.setInteger("userY", user.getPos().getY());
 					userCompound.setInteger("userZ", user.getPos().getZ());
-					userCompound.setInteger("userDim", user.getDimension());
+					userCompound.setInteger("userDim", user.getDim());
 					
 					userCompound.setInteger("userIOup", user.getIOfunctionForSide(EnumFacing.UP));
 					userCompound.setInteger("userIOdown", user.getIOfunctionForSide(EnumFacing.DOWN));
@@ -82,7 +85,7 @@ public class GridRegistry {
 					userCompound.setInteger("userIOwest", user.getIOfunctionForSide(EnumFacing.WEST));
 					userCompound.setString("userClasspath", user.getClass().getName());
 					
-					userCompound.setInteger("userGridID", user.getGrid().ID);
+					//userCompound.setInteger("userGridID", user.getGrid().ID);
 					gridCompound.setTag("user_" + user.getID(), userCompound);
 				}
 				gridCompound.setInteger("nodeCount", grid.getNodesSize());
@@ -130,9 +133,13 @@ public class GridRegistry {
 						boolean isMainNode = nodeCompound.getBoolean("isMainNode");
 						
 						Class iGridNodeClass = MiscUtil.getClassForName(nodeCompound.getString("nodeClasspath"));
-						Constructor iGridNodeClassConstructor = iGridNodeClass.getConstructor(BlockPos.class, int.class, int.class, boolean.class);
+						Constructor iGridNodeClassConstructor = iGridNodeClass.getConstructor(BlockPos.class, int.class);
 						
-						IGridNode node = (IGridNode) iGridNodeClassConstructor.newInstance(pos, dim, distToMainNode, isMainNode);
+						IGridNode node = (IGridNode) iGridNodeClassConstructor.newInstance(pos, dim);
+						node.setDistanceToMainNode(distToMainNode);
+						
+						if(isMainNode)
+							node.setMainNode();
 						
 						man.addNodeToNet(node);
 					}
@@ -145,7 +152,7 @@ public class GridRegistry {
 						int dim = userCompound.getInteger("nodeDim");
 						
 						Class iGridUserClass = MiscUtil.getClassForName(userCompound.getString("nodeClasspath"));
-						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(BlockPos.class, int.class, int.class, boolean.class);
+						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(BlockPos.class, int.class);
 						
 						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(pos, dim);
 						

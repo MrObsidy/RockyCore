@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.chatutil;
+package mrobsidy.rockycore.misc;
 
 public enum ChatFormats {
 	DARK_RED, RED, GOLD, YELLOW, DARK_GREEN, GREEN, AQUA, DARK_AQUA, DARK_BLUE, BLUE,

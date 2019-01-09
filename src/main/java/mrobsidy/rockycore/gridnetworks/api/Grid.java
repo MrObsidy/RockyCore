@@ -1,4 +1,4 @@
-package mrobsidy.rockycore.gridnetworks;
+package mrobsidy.rockycore.gridnetworks.api;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,8 +29,7 @@ public abstract class Grid{
 		mainNode = node;
 		node.setID(0);
 		nodes.add(node);
-		node.setGrid(this);
-		
+			
 		Debug.debug("Created a Grid, main node: " + mainNode.toString() + " with an ID of: " + mainNode.getID());
 		//this.man = man;
 	}
@@ -69,16 +68,14 @@ public abstract class Grid{
 		capacity += amount;
 	}
 	
-	void addUser(IGridUser user){
+	public void addUser(IGridUser user){
 		Debug.debug("addUser method fired");
 		this.users.add(user);
-		user.setGrid(this);
 		user.setID(this.users.size() - 1);
 	}
 	
-	void addNode(IGridNode node){
+	public void addNode(IGridNode node){
 		this.nodes.add(node);
-		node.setGrid(this);
 		node.setID(this.nodes.size() - 1);
 	}
 }

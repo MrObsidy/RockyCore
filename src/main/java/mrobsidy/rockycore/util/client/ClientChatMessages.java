@@ -1,6 +1,7 @@
-package mrobsidy.rockycore.chatutil;
+package mrobsidy.rockycore.util.client;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.util.server.ServerChatMessages;
 import net.minecraft.util.text.TextComponentString;
 
 /**
