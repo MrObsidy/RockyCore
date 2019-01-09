@@ -101,11 +101,12 @@ public class GridManager{
 			//TODO make this function
 		} else {
 			try {
-				Constructor constr = this.gridType.getConstructor(IGridNode.class);
+				Constructor constr = this.gridType.getConstructor();
 				try {
-					Grid newGrid = (Grid) constr.newInstance(node);
+					Grid newGrid = (Grid) constr.newInstance();
 					networks.add(newGrid);
 					newGrid.ID = networks.size();
+					newGrid.addNode(node);
 					Debug.debug("Created a new network " + networks.get(networks.size() - 1));
 				} catch (InstantiationException e) {
 					e.printStackTrace();

@@ -9,8 +9,6 @@ public abstract class Grid{
 
 	private int capacity;
 	
-	private IGridNode mainNode;
-	
 	private ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
 	
 	private ArrayList<IGridUser> users = new ArrayList<IGridUser>();
@@ -23,14 +21,11 @@ public abstract class Grid{
 	 * 
 	 * @param node
 	 */
-	public Grid(IGridNode node /*, GridManager man*/){
+	public Grid(){
 		//ID = man.register(this);
 		capacity = 0;
-		mainNode = node;
-		node.setID(0);
-		nodes.add(node);
 			
-		Debug.debug("Created a Grid, main node: " + mainNode.toString() + " with an ID of: " + mainNode.getID());
+		Debug.debug("Created a Grid");
 		//this.man = man;
 	}
 	
@@ -40,10 +35,6 @@ public abstract class Grid{
 	
 	public ArrayList<IGridUser> getUsers(){
 		return this.users;
-	}
-	
-	public IGridNode getMainNode(){
-		return this.mainNode;
 	}
 	
 	/**

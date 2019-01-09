@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,6 +22,8 @@ public abstract class BlockNode extends Block implements IGridNode {
 	private boolean isMainNode;
 	private int ID;
 	private static Class gridClass;
+	private EnumFacing[] conDirs = new EnumFacing[6];
+	private boolean isConnectingNode;
 	
 	/**
 	 * 
@@ -58,8 +61,13 @@ public abstract class BlockNode extends Block implements IGridNode {
 		return this.gridClass;
 	}
 	
+	/**
+	 * 
+	 * u no override dis, this method adds this to a grid.
+	 * 
+	 */
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack){
+	public final void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack){
 		try {
 			BlockNode block = this.getClass().getConstructor(BlockPos.class, int.class).newInstance(pos, entity.dimension);
 			
@@ -78,16 +86,6 @@ public abstract class BlockNode extends Block implements IGridNode {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public void setDistanceToMainNode(int dist) {
-		this.distToMainNode = dist;
-	}
-
-	@Override
-	public int getDistanceToMainNode() {
-		return this.distToMainNode;
 	}
 
 	@Override
@@ -126,13 +124,24 @@ public abstract class BlockNode extends Block implements IGridNode {
 	}
 
 	@Override
-	public boolean isMainNode() {
-		return this.isMainNode;
+	public EnumFacing[] getConnectionDirections() {
+		return this.conDirs;
 	}
 
 	@Override
-	public void setMainNode() {
-		this.isMainNode = true;
+	public void setConnectingNode(boolean isConNode) {
+		
+	}
+
+	@Override
+	public boolean getConnectingNode() {
+		return false;
+	}
+
+	@Override
+	public void setConnectingDirection(EnumFacing connection, boolean isConnected) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

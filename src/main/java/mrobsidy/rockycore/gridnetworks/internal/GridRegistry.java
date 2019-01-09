@@ -60,10 +60,10 @@ public class GridRegistry {
 					nodeCompound.setInteger("nodeZ", node.getPosition().getZ());
 					nodeCompound.setInteger("nodeDim", node.getDimension());
 					
-					nodeCompound.setInteger("nodeDistToMainNode", node.getDistanceToMainNode());
+					//nodeCompound.setInteger("nodeDistToMainNode", node.getDistanceToMainNode());
 					//nodeCompound.setInteger("nodeGridID", node.getGrid().ID);
 					
-					nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
+					//nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
 					nodeCompound.setString("nodeClasspath", node.getClass().getName());
 					
 					gridCompound.setTag("node_" + node.getID(), nodeCompound);
@@ -128,30 +128,27 @@ public class GridRegistry {
 						
 						int dim = nodeCompound.getInteger("nodeDim");
 						
-						int distToMainNode = nodeCompound.getInteger("distToMainNode");
+						//int distToMainNode = nodeCompound.getInteger("distToMainNode");
 						
-						boolean isMainNode = nodeCompound.getBoolean("isMainNode");
+						//boolean isMainNode = nodeCompound.getBoolean("isMainNode");
 						
 						Class iGridNodeClass = MiscUtil.getClassForName(nodeCompound.getString("nodeClasspath"));
 						Constructor iGridNodeClassConstructor = iGridNodeClass.getConstructor(BlockPos.class, int.class);
 						
 						IGridNode node = (IGridNode) iGridNodeClassConstructor.newInstance(pos, dim);
-						node.setDistanceToMainNode(distToMainNode);
-						
-						if(isMainNode)
-							node.setMainNode();
+						//node.setDistanceToMainNode(distToMainNode);
 						
 						man.addNodeToNet(node);
 					}
 					
-					for(int u = 0; u == gridCompound.getInteger(""); u++){
-						NBTTagCompound userCompound = gridCompound.getCompoundTag("node_" + u);
+					for(int u = 0; u == gridCompound.getInteger("userCount"); u++){
+						NBTTagCompound userCompound = gridCompound.getCompoundTag("user_" + u);
 					
 						BlockPos pos = new BlockPos(userCompound.getInteger("userX"), userCompound.getInteger("userY"), userCompound.getInteger("userZ"));
 						
-						int dim = userCompound.getInteger("nodeDim");
+						int dim = userCompound.getInteger("userDim");
 						
-						Class iGridUserClass = MiscUtil.getClassForName(userCompound.getString("nodeClasspath"));
+						Class iGridUserClass = MiscUtil.getClassForName(userCompound.getString("userClasspath"));
 						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(BlockPos.class, int.class);
 						
 						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(pos, dim);

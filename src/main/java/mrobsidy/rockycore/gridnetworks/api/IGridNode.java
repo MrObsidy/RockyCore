@@ -1,24 +1,10 @@
 package mrobsidy.rockycore.gridnetworks.api;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 public interface IGridNode {
-	/**
-	 * 
-	 * Set the distance to main node of the network
-	 * 
-	 * @param dist
-	 */
-	public void setDistanceToMainNode(int dist);
-	
-	/**
-	 * 
-	 * Get the distance to the main node of the network
-	 * 
-	 * @return
-	 */
-	public int getDistanceToMainNode();
 	
 	
 	/**
@@ -52,13 +38,12 @@ public interface IGridNode {
 	
 	public void tick();
 	
-	public boolean isMainNode();
+	public EnumFacing[] getConnectionDirections();
 	
-	/**
-	 * 
-	 * INTERNAL USE ONLY! If you mess with this, you'll mess everything up.
-	 * @deprecated
-	 * 
-	 */
-	public void setMainNode();
+	public void setConnectingDirection(EnumFacing connection, boolean isConnected);
+	
+	public void setConnectingNode(boolean isConNode);
+	
+	public boolean getConnectingNode();
+	
 }
