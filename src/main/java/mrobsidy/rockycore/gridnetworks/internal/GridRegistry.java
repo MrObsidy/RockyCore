@@ -1,3 +1,28 @@
+/**
+ * 
+ *  RockyCore
+ *  Copyright (C) 2018-2019 MrObsidy
+ *  
+ *  
+ *  This file is part of RockyCore.
+ *
+ *  RockyCore is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RockyCore is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RockyCore.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
+
 package mrobsidy.rockycore.gridnetworks.internal;
 
 import java.lang.reflect.Constructor;
@@ -47,9 +72,14 @@ public class GridRegistry {
 		
 		NBTTagCompound saveCompound = new NBTTagCompound();
 		
+		int gm = 0;
 		for(GridManager gridManager : gridManagers){
+			int g = 0;
 			NBTTagCompound gridManCompound = new NBTTagCompound();
 			for(Grid grid : gridManager.getGrids()){
+				int n = 0;
+				int u = 0;
+				
 				NBTTagCompound gridCompound = new NBTTagCompound();
 				for(IGridNode node : grid.getNodes()){
 					NBTTagCompound nodeCompound = new NBTTagCompound();
@@ -66,7 +96,8 @@ public class GridRegistry {
 					//nodeCompound.setBoolean("nodeIsMainNode", node.isMainNode());
 					nodeCompound.setString("nodeClasspath", node.getClass().getName());
 					
-					gridCompound.setTag("node_" + node.getID(), nodeCompound);
+					gridCompound.setTag("node_" + n, nodeCompound);
+					n++;
 				}
 				for (IGridUser user : grid.getUsers()){
 					NBTTagCompound userCompound = new NBTTagCompound();
@@ -86,15 +117,15 @@ public class GridRegistry {
 					userCompound.setString("userClasspath", user.getClass().getName());
 					
 					//userCompound.setInteger("userGridID", user.getGrid().ID);
-					gridCompound.setTag("user_" + user.getID(), userCompound);
+					gridCompound.setTag("user_" + u, userCompound);
+					u++;
 				}
 				gridCompound.setInteger("nodeCount", grid.getNodesSize());
 				gridCompound.setInteger("userCount", grid.getUsersSize());
 				
 				gridCompound.setString("gridClass", grid.getClass().getName());
 				
-				gridCompound.setInteger("gridID", grid.ID);
-				gridManCompound.setTag("grid_" + grid.ID, gridCompound);
+				gridManCompound.setTag("grid_" + g, gridCompound);
 			}
 			gridManCompound.setInteger("gridManID", gridManager.ID);
 			saveCompound.setTag("gridManager_" + gridManager.ID, gridManCompound);

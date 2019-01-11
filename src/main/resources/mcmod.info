@@ -1,0 +1,18 @@
+[
+    {
+        "modid": "rockycore",
+        "name": "RockyCore",
+        "description": "A core lbrary mod used by all my mods.",
+        "version": "${version}",
+        "credits": "MrObsidy24",
+        "mcversion": "${mc_version}",
+        "url": "https://github.com/MrObsidy/RockyCore",
+        "updateUrl": "",
+        "authorList": [ "MrObsidy" ],
+        "parent": "",
+        "screenshots": [],
+        "dependencies": [
+            "forge"
+        ]
+    }
+]

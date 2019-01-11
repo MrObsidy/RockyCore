@@ -1,3 +1,28 @@
+/**
+ * 
+ *  RockyCore
+ *  Copyright (C) 2018-2019 MrObsidy
+ *  
+ *  
+ *  This file is part of RockyCore.
+ *
+ *  RockyCore is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RockyCore is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RockyCore.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
+
 package mrobsidy.rockycore.gridnetworks.internal;
 
 import java.io.Serializable;
@@ -33,20 +58,6 @@ public class GridManager{
 		this.ID = ID;
 	}
 	
-	
-	/**
-	 * 
-	 * Keep in mind that it's your job to reassemble the data on your own.
-	 * 
-	 * @param networks
-	 * @return a new GridManager with everything added into it.
-	 */
-	public static GridManager reconstruct(ArrayList<Grid> networks, ArrayList<IGridNode> nodes, ArrayList<IGridUser> users){
-		GridManager thisGM = new GridManager(networks.get(0).getClass());
-		thisGM.rebuild(networks);
-		return thisGM;
-	}
-	
 	public Class getManagerClass(){
 		return this.gridType;
 	}
@@ -64,7 +75,24 @@ public class GridManager{
 		return networks.size() - 1;
 	}
 	
+	public void removeNodeFromNet(IGridNode node){
+		Grid trg = getGridForNode(node);
+		trg.getNodes().remove(node);
+		if(trg.getNodesSize() == 0){
+			networks.remove(trg);
+		}
+	}
+	
+	public void removeUserFromNet(IGridUser user){
+		Grid trg = getGridForUser(user);
+		trg.getUsers().remove(user);
+	}
+	
 	public void addNodeToNet(IGridNode node){
+		addNodeToNet(node, false);
+	}
+	
+	public void addNodeToNet(IGridNode node, boolean noNewNet){
 		BlockPos blockPos = node.getPosition();	
 		boolean gridWasFound = false;
 		
@@ -83,6 +111,26 @@ public class GridManager{
 				grids.add(this.getGridForNode((IGridNode) block));
 				gridWasFound = true;
 				iterates.add(new Integer(iterate));
+				
+				int fliterate = iterate;
+				
+				EnumFacing direction = null;
+				
+				if (fliterate == 0){
+					direction = EnumFacing.WEST;
+				} else if (fliterate == 1){
+					direction = EnumFacing.EAST;
+				} else if (fliterate == 2){
+					direction = EnumFacing.DOWN;
+				} else if (fliterate == 3){
+					direction = EnumFacing.UP;
+				} else if (fliterate == 4){
+					direction = EnumFacing.NORTH;
+				} else if (fliterate == 5){
+					direction = EnumFacing.SOUTH;
+				}
+				
+				((IGridNode) block).setConnectingDirection(direction, true);
 			}
 			iterate++;
 		}
@@ -125,39 +173,102 @@ public class GridManager{
 				}
 			}
 			biggestGrid.addNode(node);
-			Debug.debug("Added node " + node.getID() + " to Grid " + biggestGrid.ID);
+			//Debug.debug("Added node"/* + node.getID() */ + " to Grid " + biggestGrid.ID);
 		} else if (gridWasFound && grids.size() < 1){
 			mergeGrids(grids);
 		} else {
-			try {
-				Constructor constr = this.gridType.getConstructor();
+			if (!noNewNet){
 				try {
-					Grid newGrid = (Grid) constr.newInstance();
-					networks.add(newGrid);
-					newGrid.ID = networks.size();
-					newGrid.addNode(node);
-					Debug.debug("Created a new network " + networks.get(networks.size() - 1));
-				} catch (InstantiationException e) {
+					Constructor constr = this.gridType.getConstructor();
+					try {
+						Grid newGrid = (Grid) constr.newInstance();
+						networks.add(newGrid);
+						//newGrid.ID = networks.size();
+						newGrid.addNode(node);
+						Debug.debug("Created a new network " + networks.get(networks.size() - 1));
+					} catch (InstantiationException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				} catch (NoSuchMethodException e) {
 					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
+				} catch (SecurityException e) {
 					e.printStackTrace();
 				}
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
 			//networks.add();
+			}
 		}
 	}
 	
+	public void addGridUserToNet(IGridUser user){
+		user.setOrphan(false);
+		
+		BlockPos blockPos = user.getPos();	
+		int dim = user.getDim();
+		
+		ArrayList<Grid> grids = new ArrayList<Grid>();
+		
+		boolean gridWasFound = false;
+		
+		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
+		
+		for(Block block : surBl){
+			if(block instanceof IGridNode){
+				Grid grid = getGridForNode((IGridNode) block);
+				gridWasFound = true;
+				grids.add(grid);
+			}
+		}
+		
+
+//		
+//		BlockPos[] surBp = new BlockPos[6]; 
+//		
+//		surBp[0] = new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ());
+//		surBp[1] = new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ());
+//		surBp[2] = new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
+//		surBp[3] = new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ());
+//		surBp[4] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1);
+//		surBp[5] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1);
+//		
+//		for(Grid network : networks){
+//			for(IGridUser gridUser : network.getUsers()){
+//				BlockPos pos = gridUser.getPos();
+//				for (BlockPos surBpUnpacked : surBp){
+//					if(pos.getX() == surBpUnpacked.getX() && pos.getY() == surBpUnpacked.getY() && pos.getZ() == surBpUnpacked.getZ()){
+//						gridWasFound = true;
+//						grids.add(network);
+//					}
+//				}
+//			}
+//		}
+		
+		
+		if(gridWasFound){
+			Grid biggestGrid = null;
+			int biggestGridSize = 0;
+				
+			for(Grid grid : grids){
+				if(grid.getNodesSize() > biggestGridSize){
+					biggestGrid = grid;
+					biggestGridSize = grid.getNodesSize();
+				}
+			}
+			biggestGrid.addUser(user);
+		} else {
+			user.setOrphan(true);
+		}
+	}
+
 	/**
 	 * 
-	 * super WIP way of doing things, is buggy AF.
+	 * super WIP way of doing things, is buggy AF. Depending on the size
+	 * of the grids, this could theorhetically create
 	 * 
 	 * @param grids
 	 */
@@ -165,15 +276,15 @@ public class GridManager{
 		Grid largestGrid = null;
 		int largestGridSize = 0;
 		
+		ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
+		
 		for(Grid grid : grids){
 			if(grid.getNodes().size() < largestGridSize){
 				largestGrid = grid;
+			} else {
+				grids.remove(grid);
 			}
 		}
-		
-		grids.remove(largestGrid);
-		
-		ArrayList<IGridNode> nodes = new ArrayList<IGridNode>();
 		
 		for (IGridNode node: nodes){
 			addNodeToNet(node);
@@ -217,63 +328,40 @@ public class GridManager{
 		return grid;
 	}
 	
-	public void addGridUserToNet(IGridUser user){
-		user.setOrphan(false);
+	public IGridNode getNodeForPos(BlockPos pos, int dim){
+		IGridNode returnNode = null;
 		
-		BlockPos blockPos = user.getPos();	
-		int dim = user.getDim();
-		
-		/* Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
-		
-		for(Block block : surBl){
-			if(block instanceof IGridNode){
-				grids.add(((IGridNode) block).getGrid());
-				gridWasFound = true;
-			}
-		}
-		
-		*/
-		
-		ArrayList<Grid> grids = new ArrayList<Grid>();
-		
-		boolean gridWasFound = false;
-		
-		BlockPos[] surBp = new BlockPos[6]; 
-		
-		surBp[0] = new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ());
-		surBp[1] = new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ());
-		surBp[2] = new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
-		surBp[3] = new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ());
-		surBp[4] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1);
-		surBp[5] = new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1);
-		
-		for(Grid network : networks){
-			for(IGridUser gridUser : network.getUsers()){
-				BlockPos pos = gridUser.getPos();
-				for (BlockPos surBpUnpacked : surBp){
-					if(pos.getX() == surBpUnpacked.getX() && pos.getY() == surBpUnpacked.getY() && pos.getZ() == surBpUnpacked.getZ()){
-						gridWasFound = true;
-						grids.add(network);
-					}
+		for(Grid network: networks){
+			for(IGridNode node : network.getNodes()){
+				if(node.getPosition().getX() == pos.getX() && node.getPosition().getY() == pos.getY() && node.getPosition().getZ() == pos.getZ() && node.getDimension() == dim){
+					returnNode = node;
 				}
 			}
 		}
 		
+		if(returnNode == null){
+			//Make something happen I guess
+		}
 		
-		if(gridWasFound){
-			Grid biggestGrid = null;
-			int biggestGridSize = 0;
-				
-			for(Grid grid : grids){
-				if(grid.getNodesSize() > biggestGridSize){
-					biggestGrid = grid;
-					biggestGridSize = grid.getNodesSize();
+		return returnNode;
+	}
+	
+	public IGridUser getUserForPos(BlockPos pos, int dim){
+		IGridUser returnUser = null;
+		
+		for(Grid network: networks){
+			for(IGridUser user : network.getUsers()){
+				if(user.getPos().getX() == pos.getX() && user.getPos().getY() == pos.getY() && user.getPos().getZ() == pos.getZ() && user.getDim() == dim){
+					returnUser = user;
 				}
 			}
-			biggestGrid.addUser(user);
-		} else {
-			user.setOrphan(true);
 		}
+		
+		if(returnUser == null){
+			//Make something happen I guess
+		}
+		
+		return returnUser;
 	}
 	
 	/*public NBTTagCompound SaveToDisk(){

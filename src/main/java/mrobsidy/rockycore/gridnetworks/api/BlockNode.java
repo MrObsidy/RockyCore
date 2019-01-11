@@ -1,3 +1,27 @@
+/**
+ * 
+ *  RockyCore
+ *  Copyright (C) 2018-2019 MrObsidy
+ *  
+ *  
+ *  This file is part of RockyCore.
+ *
+ *  RockyCore is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RockyCore is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RockyCore.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
 package mrobsidy.rockycore.gridnetworks.api;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+
 public abstract class BlockNode extends Block implements IGridNode {
 
 	public static Material initMaterial;
@@ -21,7 +46,6 @@ public abstract class BlockNode extends Block implements IGridNode {
 	private int dim;
 	private int distToMainNode;
 	private boolean isMainNode;
-	private int ID;
 	private static Class gridClass;
 	private HashMap<EnumFacing, Boolean> conDirs = new HashMap<EnumFacing, Boolean>();
 	private boolean isConnectingNode;
@@ -55,10 +79,8 @@ public abstract class BlockNode extends Block implements IGridNode {
 	 * 
 	 * @param pos - the position of the node
 	 * @param dim - the dimension of the node
-	 * @param distToMainNode - distance to the main node of the grid
-	 * @param isMainNode - whether this is the main node
+	 *
 	 */
-
 	public BlockNode(BlockPos pos, int dim){
 		this(initMaterial);
 		this.pos = pos;
@@ -72,17 +94,29 @@ public abstract class BlockNode extends Block implements IGridNode {
 		
 	}
 	
-	public Class getGridClass(){
+	/**
+	 * 
+	 * Gets the type of grid this Node is registered to [FINAL]
+	 * 
+	 * @return the Class
+	 */
+	public final Class getGridClass(){
 		return this.gridClass;
 	}
 	
 	/**
 	 * 
-	 * u no override dis, this method adds this to a grid.
+	 * u no override dis, this method adds this to a grid. [FINAL]
 	 * 
 	 */
 	@Override
 	public final void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack){
+		
+		if(world.isRemote) return;
+		
+		if(entity.world.isRemote) return;
+		//ALWAYS DOUBLE CHECK AND TRIPLE CHICK.. [cut] CHECK!
+		
 		try {
 			BlockNode block = this.getClass().getConstructor(BlockPos.class, int.class).newInstance(pos, entity.dimension);
 			
@@ -103,58 +137,95 @@ public abstract class BlockNode extends Block implements IGridNode {
 		}
 	}
 
+	/**
+	 * 
+	 * Getter for the position [FINAL]
+	 * 
+	 */
 	@Override
-	public BlockPos getPosition() {
+	public final BlockPos getPosition() {
 		return this.pos;
 	}
 
+	/**
+	 * 
+	 * Setter for the position
+	 * 
+	 */
 	@Override
 	public void setPosition(BlockPos pos) {
 		this.pos = pos;
 	}
 
-	@Override
-	public void setID(int id) {
-		this.ID = id;
-	}
 
-	@Override
-	public int getID() {
-		return this.ID;
-	}
-
+	/**
+	 * 
+	 * Not used, probably deleted in a future version
+	 * 
+	 */
+	@Deprecated
 	@Override
 	public void checkGrid() {
 		//never used dev method
 	}
 
+	/**
+	 * 
+	 * Getter for the dimension
+	 * 
+	 */
 	@Override
 	public int getDimension() {
 		return this.dim;
 	}
 
+	/**
+	 * 
+	 * Tick method, default is empty. If you need this, override it.
+	 * 
+	 */
 	@Override
 	public void tick() {
 		//TODO
 	}
 
+	/**
+	 * 
+	 * Gets whether the side key is connected to anything. [FINAL]
+	 * 
+	 */
 	@Override
-	public boolean getConnectionDirections(EnumFacing key) {
+	public final boolean getConnectionDirections(EnumFacing key) {
 		return this.conDirs.get(key);
 	}
 
+	/**
+	 * 
+	 * This method sets whether this node is a connecting node. [FINAL]
+	 * 
+	 */
 	@Override
-	public void setConnectingNode(boolean isConNode) {
+	public final void setConnectingNode(boolean isConNode) {
 		this.isConnectingNode = isConNode;
 	}
 
+	/**
+	 * 
+	 * Gets whether this node is connecting to others or if it is just a regular cable. [FINAL]
+	 * 
+	 */
 	@Override
-	public boolean getConnectingNode() {
+	public final boolean getConnectingNode() {
 		return this.isConnectingNode;
 	}
 
+	/**
+	 * 
+	 * Sets the connecting status of the Side connecting. [FINAL]
+	 * 
+	 */
 	@Override
-	public void setConnectingDirection(EnumFacing connection, boolean isConnected) {
+	public final void setConnectingDirection(EnumFacing connection, boolean isConnected) {
 		this.conDirs.put(connection, isConnected);
 	}
 	
