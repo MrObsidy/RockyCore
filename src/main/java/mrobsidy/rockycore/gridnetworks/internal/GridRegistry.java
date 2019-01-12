@@ -37,6 +37,8 @@ import mrobsidy.rockycore.misc.MiscUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 public class GridRegistry {
 	private ArrayList<GridManager> gridManagers = new ArrayList<GridManager>();
@@ -170,6 +172,9 @@ public class GridRegistry {
 	}
 	
 	public void reassembleGrids(NBTTagCompound compound){
+		
+		if(DimensionManager.getWorld(0).isRemote) return;
+		
 		try{
 			
 			for(int gM = 0; gM == compound.getInteger("gridManagerCount"); gM++){
@@ -212,9 +217,9 @@ public class GridRegistry {
 						int dim = userCompound.getInteger("userDim");
 						
 						Class iGridUserClass = MiscUtil.getClassForName(userCompound.getString("userClasspath"));
-						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(BlockPos.class, int.class);
+						Constructor iGridUserClassConstructor = iGridUserClass.getConstructor(World.class);
 						
-						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(pos, dim);
+						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(DimensionManager.getWorld(dim));
 						
 						user.setInputFunctionForSide(EnumFacing.UP, userCompound.getInteger("userIOup"));
 						user.setInputFunctionForSide(EnumFacing.DOWN, userCompound.getInteger("userIOdown"));
@@ -226,6 +231,19 @@ public class GridRegistry {
 						man.addGridUserToNet(user);
 					
 					}	
+					
+					for(int gen = 0; gen == gridCompound.getInteger("generatorCount"); gen++){
+						NBTTagCompound generatorCompound = gridCompound.getCompoundTag("generator_");
+						BlockPos pos = new BlockPos(generatorCompound.getInteger("generatorX"), generatorCompound.getInteger("generatorY"), generatorCompound.getInteger("generatorZ"));
+						
+						int dim = generatorCompound.getInteger("generatorDim");
+						
+						Class iGridGeneratorClass = MiscUtil.getClassForName(generatorCompound.getString("generatorClasspath"));
+						Constructor iGridGeneratorClassConstructor = iGridGeneratorClass.getConstructor(World.class);
+						
+						IGridGenerator generator = (IGridGenerator) iGridGeneratorClassConstructor.newInstance(DimensionManager.getWorld(dim));
+						
+					}
 				}
 				
 				registerGridManager(man);

@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class TileEntityGenerator extends TileEntity implements IGridGenerator, ITickable {
 
@@ -13,6 +14,10 @@ public abstract class TileEntityGenerator extends TileEntity implements IGridGen
 	
 	private int OUTPUT_VOLTAGE;
 	private int OUTPUT_AMPERAGE;
+	
+	public TileEntityGenerator(World world){
+		
+	}
 	
 	@Override
 	public abstract void update();
