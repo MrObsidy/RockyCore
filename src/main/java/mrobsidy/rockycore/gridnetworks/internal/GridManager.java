@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import mrobsidy.rockycore.gridnetworks.api.Grid;
+import mrobsidy.rockycore.gridnetworks.api.IGridGenerator;
 import mrobsidy.rockycore.gridnetworks.api.IGridNode;
 import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.init.RegistryRegistry;
@@ -70,29 +71,29 @@ public class GridManager{
 		this.networks = networks;
 	}
 	
-	public int register(Grid grid){
+	public void register(Grid grid){
 		networks.add(grid);
-		return networks.size() - 1;
 	}
 	
 	public void removeNodeFromNet(IGridNode node){
 		Grid trg = getGridForNode(node);
-		trg.getNodes().remove(node);
-		if(trg.getNodesSize() == 0){
+		trg.removeNode(node);
+		if(trg.getNodes().size() == 0){
 			networks.remove(trg);
 		}
 	}
 	
 	public void removeUserFromNet(IGridUser user){
 		Grid trg = getGridForUser(user);
-		trg.getUsers().remove(user);
+		trg.removeUser(user);;
 	}
 	
-	public void addNodeToNet(IGridNode node){
-		addNodeToNet(node, false);
+	public boolean addNodeToNet(IGridNode node){
+		boolean ret = addNodeToNet(node, false);
+		return ret;
 	}
 	
-	public void addNodeToNet(IGridNode node, boolean noNewNet){
+	public boolean addNodeToNet(IGridNode node, boolean noNewNet){
 		BlockPos blockPos = node.getPosition();	
 		boolean gridWasFound = false;
 		
@@ -167,14 +168,15 @@ public class GridManager{
 			int biggestGridSize = 0;
 				
 			for(Grid grid : grids){
-				if(grid.getNodesSize() > biggestGridSize){
+				if(grid.getNodes().size() > biggestGridSize){
 					biggestGrid = grid;
-					biggestGridSize = grid.getNodesSize();
+					biggestGridSize = grid.getNodes().size();
 				}
 			}
 			biggestGrid.addNode(node);
 			//Debug.debug("Added node"/* + node.getID() */ + " to Grid " + biggestGrid.ID);
 		} else if (gridWasFound && grids.size() < 1){
+			grids.get(0).addNode(node); //otherwise this node will be lost
 			mergeGrids(grids);
 		} else {
 			if (!noNewNet){
@@ -203,6 +205,7 @@ public class GridManager{
 			//networks.add();
 			}
 		}
+		return gridWasFound;
 	}
 	
 	public void addGridUserToNet(IGridUser user){
@@ -254,9 +257,9 @@ public class GridManager{
 			int biggestGridSize = 0;
 				
 			for(Grid grid : grids){
-				if(grid.getNodesSize() > biggestGridSize){
+				if(grid.getNodes().size() > biggestGridSize){
 					biggestGrid = grid;
-					biggestGridSize = grid.getNodesSize();
+					biggestGridSize = grid.getNodes().size();
 				}
 			}
 			biggestGrid.addUser(user);
@@ -265,10 +268,45 @@ public class GridManager{
 		}
 	}
 
+	
+	public void addGridGeneratorToNet(IGridGenerator generator){
+		
+		BlockPos blockPos = generator.getPosit();
+		int dim = generator.getDimen();
+		
+		ArrayList<Grid> grids = new ArrayList<Grid>();
+		
+		boolean gridWasFound = false;
+		
+		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
+		
+		for(Block block : surBl){
+			if(block instanceof IGridNode){
+				Grid grid = getGridForNode((IGridNode) block);
+				gridWasFound = true;
+				grids.add(grid);
+			}
+		}
+		
+		if(gridWasFound){
+			Grid biggestGrid = null;
+			int biggestGridSize = 0;
+				
+			for(Grid grid : grids){
+				if(grid.getNodes().size() > biggestGridSize){
+					biggestGrid = grid;
+					biggestGridSize = grid.getNodes().size();
+				}
+			}
+			biggestGrid.addGenerator(generator);
+		} else {
+			//Do nothing
+		}
+	}
+	
 	/**
 	 * 
-	 * super WIP way of doing things, is buggy AF. Depending on the size
-	 * of the grids, this could theorhetically create
+	 * Merges two or more Grids. [WIP!]
 	 * 
 	 * @param grids
 	 */
@@ -287,7 +325,10 @@ public class GridManager{
 		}
 		
 		for (IGridNode node: nodes){
-			addNodeToNet(node);
+			boolean success = addNodeToNet(node);
+			if(!success){
+				nodes.add(node);
+			}
 		}
 		
 	}

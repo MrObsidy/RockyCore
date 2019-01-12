@@ -31,8 +31,7 @@ import net.minecraft.util.math.BlockPos;
 public interface IGridUser {
 	
 	public static final int IO_INDIFFERENT = 0;
-	public static final int IO_OUTPUT = 1;
-	public static final int IO_INPUT = 2;
+	public static final int IO_INPUT = 1;
 	
 	/**
 	 * 
@@ -65,8 +64,11 @@ public interface IGridUser {
 	 * @param direction
 	 * @return 
 	 */
-	public int getIOfunctionForSide(EnumFacing direction);
-	public void setIOfunctionForSide(EnumFacing direction, int function);
+	public int getInputFunctionForSide(EnumFacing direction);
+	public void setInputFunctionForSide(EnumFacing direction, int function);
+	
+	public int getInputVoltage();
+	public int getInputAmperage();
 	
 	/**
 	 * 
@@ -80,12 +82,4 @@ public interface IGridUser {
 	 * 
 	 */
 	public void setOrphan(boolean isOrphan);
-	
-	/**
-	 * 
-	 * Tick the damn thing. I wouldn't recommend ticking this manually.
-	 * Oh yeah, and use Server Ticks.
-	 * 
-	 */
-	public void tick();
 }

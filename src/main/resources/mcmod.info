@@ -7,7 +7,7 @@
         "credits": "MrObsidy24",
         "mcversion": "${mc_version}",
         "url": "https://github.com/MrObsidy/RockyCore",
-        "updateUrl": "",
+        "updateUrl": "https://raw.githubusercontent.com/MrObsidy/technical-data-inf/master/rockycore/update.json",
         "authorList": [ "MrObsidy" ],
         "parent": "",
         "screenshots": [],

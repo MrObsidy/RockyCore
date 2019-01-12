@@ -29,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 import mrobsidy.rockycore.gridnetworks.api.Grid;
+import mrobsidy.rockycore.gridnetworks.api.IGridGenerator;
 import mrobsidy.rockycore.gridnetworks.api.IGridNode;
 import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.misc.Debug;
@@ -74,11 +75,12 @@ public class GridRegistry {
 		
 		int gm = 0;
 		for(GridManager gridManager : gridManagers){
-			int g = 0;
+			int gr = 0;
 			NBTTagCompound gridManCompound = new NBTTagCompound();
 			for(Grid grid : gridManager.getGrids()){
 				int n = 0;
 				int u = 0;
+				int g = 0;
 				
 				NBTTagCompound gridCompound = new NBTTagCompound();
 				for(IGridNode node : grid.getNodes()){
@@ -108,28 +110,58 @@ public class GridRegistry {
 					userCompound.setInteger("userZ", user.getPos().getZ());
 					userCompound.setInteger("userDim", user.getDim());
 					
-					userCompound.setInteger("userIOup", user.getIOfunctionForSide(EnumFacing.UP));
-					userCompound.setInteger("userIOdown", user.getIOfunctionForSide(EnumFacing.DOWN));
-					userCompound.setInteger("userIOnorth", user.getIOfunctionForSide(EnumFacing.NORTH));
-					userCompound.setInteger("userIOeast", user.getIOfunctionForSide(EnumFacing.EAST));
-					userCompound.setInteger("userIOsouth", user.getIOfunctionForSide(EnumFacing.SOUTH));
-					userCompound.setInteger("userIOwest", user.getIOfunctionForSide(EnumFacing.WEST));
+					userCompound.setInteger("userVoltage", user.getInputVoltage());
+					userCompound.setInteger("userAmperage", user.getInputAmperage());
+					
+					userCompound.setInteger("userIOup", user.getInputFunctionForSide(EnumFacing.UP));
+					userCompound.setInteger("userIOdown", user.getInputFunctionForSide(EnumFacing.DOWN));
+					userCompound.setInteger("userIOnorth", user.getInputFunctionForSide(EnumFacing.NORTH));
+					userCompound.setInteger("userIOeast", user.getInputFunctionForSide(EnumFacing.EAST));
+					userCompound.setInteger("userIOsouth", user.getInputFunctionForSide(EnumFacing.SOUTH));
+					userCompound.setInteger("userIOwest", user.getInputFunctionForSide(EnumFacing.WEST));
 					userCompound.setString("userClasspath", user.getClass().getName());
 					
 					//userCompound.setInteger("userGridID", user.getGrid().ID);
 					gridCompound.setTag("user_" + u, userCompound);
 					u++;
 				}
-				gridCompound.setInteger("nodeCount", grid.getNodesSize());
-				gridCompound.setInteger("userCount", grid.getUsersSize());
+				for (IGridGenerator generator : grid.getGenerators()){
+					NBTTagCompound generatorCompound = new NBTTagCompound();
+					generatorCompound.setString("compoundType", "TYPE_GENERATOR");
+					
+					generatorCompound.setInteger("generatorX", generator.getPosit().getX());
+					generatorCompound.setInteger("generatorY", generator.getPosit().getY());
+					generatorCompound.setInteger("generatorZ", generator.getPosit().getZ());
+					generatorCompound.setInteger("generatorDim", generator.getDimen());
+					
+					generatorCompound.setInteger("generatorVoltage", generator.getOutputVoltage());
+					generatorCompound.setInteger("generatorAmperage", generator.getOutputAmperage());
+					
+					generatorCompound.setInteger("generatorIOup", generator.getOutputFunctionForSide(EnumFacing.UP));
+					generatorCompound.setInteger("generatorIOdown", generator.getOutputFunctionForSide(EnumFacing.DOWN));
+					generatorCompound.setInteger("generatorIOnorth", generator.getOutputFunctionForSide(EnumFacing.NORTH));
+					generatorCompound.setInteger("generatorIOeast", generator.getOutputFunctionForSide(EnumFacing.EAST));
+					generatorCompound.setInteger("generatorIOsouth", generator.getOutputFunctionForSide(EnumFacing.SOUTH));
+					generatorCompound.setInteger("generatorIOwest", generator.getOutputFunctionForSide(EnumFacing.WEST));
+					generatorCompound.setString("generatorClasspath", generator.getClass().getName());
+					
+					//userCompound.setInteger("userGridID", user.getGrid().ID);
+					gridCompound.setTag("generator_" + g, generatorCompound);
+					g++;
+				}
+				gridCompound.setInteger("nodeCount", grid.getNodes().size());
+				gridCompound.setInteger("userCount", grid.getUsers().size());
+				gridCompound.setInteger("generatorCount", grid.getGenerators().size());
 				
 				gridCompound.setString("gridClass", grid.getClass().getName());
 				
-				gridManCompound.setTag("grid_" + g, gridCompound);
+				gridManCompound.setTag("grid_" + gr, gridCompound);
+				gr++;
 			}
 			gridManCompound.setInteger("gridManID", gridManager.ID);
 			saveCompound.setTag("gridManager_" + gridManager.ID, gridManCompound);
 			gridManCompound.setInteger("gridCount", gridManager.getGrids().size());
+			gm++;
 		}
 		saveCompound.setString("rockycore_DATA", "gridRegistrySaveData");
 		saveCompound.setInteger("gridManagerCount", gridManagers.size());
@@ -184,12 +216,12 @@ public class GridRegistry {
 						
 						IGridUser user = (IGridUser) iGridUserClassConstructor.newInstance(pos, dim);
 						
-						user.setIOfunctionForSide(EnumFacing.UP, userCompound.getInteger("userIOup"));
-						user.setIOfunctionForSide(EnumFacing.DOWN, userCompound.getInteger("userIOdown"));
-						user.setIOfunctionForSide(EnumFacing.NORTH, userCompound.getInteger("userIOnorth"));
-						user.setIOfunctionForSide(EnumFacing.EAST, userCompound.getInteger("userIOeast"));
-						user.setIOfunctionForSide(EnumFacing.SOUTH, userCompound.getInteger("userIOsouth"));
-						user.setIOfunctionForSide(EnumFacing.WEST, userCompound.getInteger("userIOwest"));
+						user.setInputFunctionForSide(EnumFacing.UP, userCompound.getInteger("userIOup"));
+						user.setInputFunctionForSide(EnumFacing.DOWN, userCompound.getInteger("userIOdown"));
+						user.setInputFunctionForSide(EnumFacing.NORTH, userCompound.getInteger("userIOnorth"));
+						user.setInputFunctionForSide(EnumFacing.EAST, userCompound.getInteger("userIOeast"));
+						user.setInputFunctionForSide(EnumFacing.SOUTH, userCompound.getInteger("userIOsouth"));
+						user.setInputFunctionForSide(EnumFacing.WEST, userCompound.getInteger("userIOwest"));
 						
 						man.addGridUserToNet(user);
 					

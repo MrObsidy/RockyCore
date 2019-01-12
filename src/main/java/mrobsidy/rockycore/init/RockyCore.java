@@ -53,12 +53,10 @@ import net.minecraftforge.fml.relauncher.Side;
  * @author mrobsidy
  *
  */
-@Mod(modid = RockyCore.MODID, name = RockyCore.MODNAME, version = RockyCore.MODVERSION /*, author = RockyCore.MODAUTHOR*/,updateJSON = "https://raw.githubusercontent.com/MrObsidy/technical-data-inf/master/rockycore/update.json")
+@Mod(modid = RockyCore.MODID, name = RockyCore.MODNAME)
 public class RockyCore {
 	public static final String MODID = "rockycore";
 	public static final String MODNAME = "RockyCore";
-	public static final String MODVERSION = "0.0.2";
-	public static final String MODAUTHOR = "MrObsidy24";
 	
 	@Mod.Instance
 	public RockyCore instance;
