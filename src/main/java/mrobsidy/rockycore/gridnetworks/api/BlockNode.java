@@ -27,14 +27,16 @@ package mrobsidy.rockycore.gridnetworks.api;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import mrobsidy.rockycore.gridnetworks.internal.GridManager;
+import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.Debug;
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -107,20 +109,36 @@ public abstract class BlockNode extends Block implements IGridNode {
 	/**
 	 * 
 	 * u no override dis, this method adds this to a grid. [FINAL]
+	 * @return 
 	 * 
 	 */
 	@Override
-	public final void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack){
+	public final int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta ){
 		
-		if(world.isRemote) return;
+		BlockPos pos = new BlockPos(x, y, z);
 		
-		if(entity.world.isRemote) return;
-		//ALWAYS DOUBLE CHECK AND TRIPLE CHICK.. [cut] CHECK!
+		if(world.isRemote) return meta;
 		
 		try {
-			BlockNode block = this.getClass().getConstructor(BlockPos.class, int.class).newInstance(pos, entity.dimension);
+			BlockNode block = this.getClass().getConstructor(BlockPos.class, int.class).newInstance(pos, world.provider.dimensionId);
 			
-			RegistryRegistry.getGridRegistry().getGridManagerForClass(this.gridClass).addNodeToNet(block);
+			if(block == null) {
+				throw new RuntimeException("Block was not created.");
+			}
+			
+			Debug.debug("BlockNode: " + block.toString()+" placed.");
+			
+			GridRegistry reg = RegistryRegistry.getGridRegistry();
+			
+			Debug.debug("Got GridRegistry: " + reg.toString());
+			
+			GridManager man = reg.getGridManagerForClass(this.gridClass);
+			
+			Debug.debug("Got GridManager " + man.toString());
+			
+			man.addNodeToNet(block);
+			
+			Debug.debug("Added BlockNode to GridManager.");
 			
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -135,6 +153,9 @@ public abstract class BlockNode extends Block implements IGridNode {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
+		
+		return meta;
+		
 	}
 
 	/**

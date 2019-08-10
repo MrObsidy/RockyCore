@@ -25,24 +25,32 @@
 
 package mrobsidy.rockycore.init;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import mrobsidy.rockycore.misc.CommandRockyCore;
+import mrobsidy.rockycore.testing.ExampleCreativeTab;
+import mrobsidy.rockycore.testing.ExampleGrid;
+import mrobsidy.rockycore.testing.ExampleNode;
 import mrobsidy.rockycore.util.client.ClientEvents;
 import mrobsidy.rockycore.util.server.ServerEvents;
 import mrobsidy.rockycore.util.server.ServerGameDataSaver;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.relauncher.Side;
+
 
 
 /**
@@ -57,6 +65,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RockyCore {
 	public static final String MODID = "rockycore";
 	public static final String MODNAME = "RockyCore";
+	public static final CreativeTabs ect = new ExampleCreativeTab("RockyCore-Test");
+	public static Block mnb;
 	
 	@Mod.Instance
 	public RockyCore instance;
@@ -68,6 +78,12 @@ public class RockyCore {
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		RegistryRegistry.initAndReset();
 		RegistryRegistry.constructMiscRegistry();
+		
+		Block myNode = new ExampleNode(Material.ground, ExampleGrid.class);
+		myNode.setBlockName("ExampleNode");
+		myNode.setCreativeTab(ect);
+		GameRegistry.registerBlock(myNode, "ExampleNode");
+		mnb = myNode;
 	}
 	
 	@Mod.EventHandler

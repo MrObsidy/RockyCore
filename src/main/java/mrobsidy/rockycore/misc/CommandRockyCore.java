@@ -29,28 +29,28 @@ import mrobsidy.rockycore.gridnetworks.api.Grid;
 import mrobsidy.rockycore.gridnetworks.api.IGridNode;
 import mrobsidy.rockycore.gridnetworks.internal.GridManager;
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.backport.TextComponentString;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ChatComponentText;
 
 public class CommandRockyCore extends CommandBase{
 
 	@Override
-	public String getName() {
+	public String getCommandName() {
 		return "rockycore";
 	}
 
 	@Override
-	public String getUsage(ICommandSender sender) {
-		
-		return null;
+	public String getCommandUsage(ICommandSender p_71518_1_) {
+		//This is never used anyways
+		return "Woo, magic useless method!!";
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	public void processCommand(ICommandSender sender, String[] args) {
 		try {
 			
 			if(sender.getEntityWorld().isRemote) return;
@@ -77,7 +77,7 @@ public class CommandRockyCore extends CommandBase{
 				Debug.debug(message.toString());
 			}
 			
-			sender.sendMessage(new TextComponentString("Usage: /rockycore debugmode [console:client:server:off]"));
+			sender.addChatMessage(new ChatComponentText("Usage: /rockycore debugmode [console:client:server:off]"));
 		}
 	}
 }

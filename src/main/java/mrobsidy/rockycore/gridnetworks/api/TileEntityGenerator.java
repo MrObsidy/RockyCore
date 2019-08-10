@@ -2,13 +2,12 @@ package mrobsidy.rockycore.gridnetworks.api;
 
 import java.util.HashMap;
 
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class TileEntityGenerator extends TileEntity implements IGridGenerator, ITickable {
+public abstract class TileEntityGenerator extends TileEntity implements IGridGenerator {
 
 	private HashMap<EnumFacing, Integer> directions = new HashMap<EnumFacing, Integer>();
 	
@@ -18,18 +17,15 @@ public abstract class TileEntityGenerator extends TileEntity implements IGridGen
 	public TileEntityGenerator(World world){
 		
 	}
-	
-	@Override
-	public abstract void update();
 
 	@Override
 	public BlockPos getPosit() {
-		return this.pos;
+		return new BlockPos(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 	@Override
 	public int getDimen() {
-		return this.world.provider.getDimension();
+		return this.worldObj.provider.dimensionId;
 	}
 
 	@Override

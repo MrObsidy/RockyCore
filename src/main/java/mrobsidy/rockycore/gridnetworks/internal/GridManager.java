@@ -35,12 +35,13 @@ import mrobsidy.rockycore.gridnetworks.api.IGridGenerator;
 import mrobsidy.rockycore.gridnetworks.api.IGridNode;
 import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.BlockWrapper;
 import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 
 public class GridManager{
 	private ArrayList<Grid> networks = new ArrayList<Grid>();
@@ -76,7 +77,7 @@ public class GridManager{
 	}
 	
 	public void removeNodeFromNet(IGridNode node){
-		Grid trg = getGridForNode(node);
+		Grid trg = getGridForPos(node.getPosition(), node.getDimension());
 		trg.removeNode(node);
 		if(trg.getNodes().size() == 0){
 			networks.remove(trg);
@@ -104,12 +105,13 @@ public class GridManager{
 		ArrayList<Grid> grids = new ArrayList<Grid>();
 		ArrayList<Integer> iterates = new ArrayList<Integer>();
 		
-		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
+		BlockWrapper[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
 		int iterate = 0;
-		for(Block block : surBl){
+		for(BlockWrapper block : surBl){
 			if(block instanceof IGridNode){
-				grids.add(this.getGridForNode((IGridNode) block));
+				IGridNode parBlock = (IGridNode) block;
+				grids.add(this.getGridForPos(block.getPos(), dim));
 				gridWasFound = true;
 				iterates.add(new Integer(iterate));
 				
@@ -218,11 +220,11 @@ public class GridManager{
 		
 		boolean gridWasFound = false;
 		
-		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
+		BlockWrapper[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
-		for(Block block : surBl){
+		for(BlockWrapper block : surBl){
 			if(block instanceof IGridNode){
-				Grid grid = getGridForNode((IGridNode) block);
+				Grid grid = getGridForPos(block.getPos(), dim);
 				gridWasFound = true;
 				grids.add(grid);
 			}
@@ -278,11 +280,11 @@ public class GridManager{
 		
 		boolean gridWasFound = false;
 		
-		Block[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
+		BlockWrapper[] surBl = MiscUtil.getSurroundingBlocks(blockPos, dim);
 		
-		for(Block block : surBl){
+		for(BlockWrapper block : surBl){
 			if(block instanceof IGridNode){
-				Grid grid = getGridForNode((IGridNode) block);
+				Grid grid = getGridForPos(block.getPos(), dim);
 				gridWasFound = true;
 				grids.add(grid);
 			}
@@ -333,15 +335,24 @@ public class GridManager{
 		
 	}
 	
-	public Grid getGridForNode(IGridNode node){
+	public Grid getGridForPos(BlockPos blockPos, int dim){
 		Grid grid = null;
-			
-		BlockPos blockPos = node.getPosition();
+		
+		if(blockPos == null){
+			throw new IllegalStateException("position is null! Proceeding to crash!");
+		}
+		
+		Debug.debug("blockPos " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ());
 		
 		for(Grid network : networks){
 			for(IGridNode gridNode : network.getNodes()){
 				BlockPos pos = gridNode.getPosition();
-				if(pos.getX() == blockPos.getX() && pos.getY() == blockPos.getY() && pos.getZ() == blockPos.getZ() && node.getDimension() == gridNode.getDimension()){
+				
+				if(pos == null){
+					throw new IllegalStateException("position is of type null! Crashing!");
+				}
+				
+				if(pos.getX() == blockPos.getX() && pos.getY() == blockPos.getY() && pos.getZ() == blockPos.getZ() && dim == gridNode.getDimension()){
 					return network;
 				}
 			}

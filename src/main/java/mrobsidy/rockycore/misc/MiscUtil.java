@@ -26,21 +26,21 @@
 package mrobsidy.rockycore.misc;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.block.Block;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MiscUtil {
 	public static World getServerWorld(int dim){
-		return RegistryRegistry.getServerRegistry().getServer().getWorld(dim);
+		return RegistryRegistry.getServerRegistry().getServer().getEntityWorld();
 	}
 	
-	public static Block getBlockAtPos(BlockPos pos, int dim){
-		return getServerWorld(dim).getBlockState(pos).getBlock();
+	public static BlockWrapper getBlockAtPos(BlockPos pos, int dim){
+		return new BlockWrapper(getServerWorld(dim).getBlock(pos.getX(), pos.getY(), pos.getZ()), pos);
 	}
 	
-	public static Block[] getSurroundingBlocks(BlockPos blockPos, int dim){
-		Block[] surroundingBlocks = new Block[6];
+	public static BlockWrapper[] getSurroundingBlocks(BlockPos blockPos, int dim){
+		BlockWrapper[] surroundingBlocks = new BlockWrapper[6];
 		
 		surroundingBlocks[0] = getBlockAtPos(new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ()), dim);
 		surroundingBlocks[1] = getBlockAtPos(new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ()), dim);

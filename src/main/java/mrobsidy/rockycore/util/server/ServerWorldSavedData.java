@@ -31,7 +31,7 @@ import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.Debug;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.world.WorldSavedData;
 
 public class ServerWorldSavedData extends WorldSavedData {
 	
@@ -76,7 +76,7 @@ public class ServerWorldSavedData extends WorldSavedData {
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public void writeToNBT(NBTTagCompound compound) {
 		for(NBTTagCompound tag : attachedData){
 			compound.setTag(tag.getString("rockycore_DATA"), tag);
 			Debug.debug("Custom Data: " + tag.toString());
@@ -84,8 +84,6 @@ public class ServerWorldSavedData extends WorldSavedData {
 		Debug.debug("Default data: " + compound.toString());
 		
 		attachedData.clear();
-		
-		return compound;
 	}
 
 }

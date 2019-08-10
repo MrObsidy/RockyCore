@@ -34,9 +34,9 @@ import mrobsidy.rockycore.gridnetworks.api.IGridNode;
 import mrobsidy.rockycore.gridnetworks.api.IGridUser;
 import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.misc.MiscUtil;
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -64,6 +64,11 @@ public class GridRegistry {
 				foundManager = manager;
 			}
 		}
+		
+		if (foundManager == null){
+			foundManager = new GridManager(parClass);
+		}
+		
 		return foundManager;
 	}
 	

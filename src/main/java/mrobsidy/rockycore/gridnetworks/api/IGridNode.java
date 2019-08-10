@@ -25,9 +25,9 @@
 
 package mrobsidy.rockycore.gridnetworks.api;
 
+import mrobsidy.rockycore.misc.backport.BlockPos;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * 

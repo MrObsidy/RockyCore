@@ -25,11 +25,11 @@
 
 package mrobsidy.rockycore.misc;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.util.client.ClientChatMessages;
 import mrobsidy.rockycore.util.server.ServerChatMessages;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class Debug {
 	

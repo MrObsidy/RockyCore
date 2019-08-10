@@ -27,9 +27,9 @@ package mrobsidy.rockycore.init;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
 import mrobsidy.rockycore.util.client.ClientRegistry;
