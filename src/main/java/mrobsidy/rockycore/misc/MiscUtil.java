@@ -26,21 +26,22 @@
 package mrobsidy.rockycore.misc;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.util.misc.helpers.BlockHelper;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MiscUtil {
 	public static World getServerWorld(int dim){
-		return RegistryRegistry.getServerRegistry().getServer().getWorld(dim);
+		return RegistryRegistry.getServerRegistry().getServer().getEntityWorld();
 	}
 	
-	public static Block getBlockAtPos(BlockPos pos, int dim){
-		return getServerWorld(dim).getBlockState(pos).getBlock();
+	public static BlockHelper getBlockAtPos(BlockPos pos, int dim){
+		return new BlockHelper(getServerWorld(dim).getBlockState(pos).getBlock(), pos);
 	}
 	
-	public static Block[] getSurroundingBlocks(BlockPos blockPos, int dim){
-		Block[] surroundingBlocks = new Block[6];
+	public static BlockHelper[] getSurroundingBlocks(BlockPos blockPos, int dim){
+		BlockHelper[] surroundingBlocks = new BlockHelper[6];
 		
 		surroundingBlocks[0] = getBlockAtPos(new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ()), dim);
 		surroundingBlocks[1] = getBlockAtPos(new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ()), dim);
@@ -53,6 +54,7 @@ public class MiscUtil {
 	}
 	
 	public static Class getClassForName(String name) throws ClassNotFoundException{
+		System.out.println(name);
 		return Class.forName(name);
 	}
 }

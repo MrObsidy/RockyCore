@@ -25,15 +25,12 @@
 
 package mrobsidy.rockycore.misc;
 
-import mrobsidy.rockycore.gridnetworks.api.Grid;
-import mrobsidy.rockycore.gridnetworks.api.IGridNode;
-import mrobsidy.rockycore.gridnetworks.internal.GridManager;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 public class CommandRockyCore extends CommandBase{
@@ -45,8 +42,7 @@ public class CommandRockyCore extends CommandBase{
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		
-		return null;
+		return "Woo, magic useless method!!";
 	}
 
 	@Override

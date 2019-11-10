@@ -30,8 +30,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
+
+import java.util.ArrayList;
+
+import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
+import mrobsidy.rockycore.registries.api.IRegistry;
 import mrobsidy.rockycore.util.client.ClientRegistry;
 import mrobsidy.rockycore.util.server.ServerRegistry;
 
@@ -48,12 +52,38 @@ public class RegistryRegistry {
 	private static ServerRegistry serverRegistry;
 	private static ClientRegistry clientRegistry;
 	private static MiscRegistry miscRegistry;
-	private static GridRegistry gridRegistry;
+	private static GridManagerRegistry gridRegistry;
+	private static ArrayList<IRegistry> customRegistries = new ArrayList<IRegistry>();
 	
 	private static boolean serverRegistrySetForCurrentSession; //Set if the Server Registry is set for the current session
 	
 	private static boolean initFirstTime; //Marker if this wasn't initialized yet
 	//Please note: "true" means that we already initialized. I made a funny when doing this.
+	
+	public static void addCustomRegistry(IRegistry reg){
+		customRegistries.add(reg);
+	}
+	
+	public static IRegistry getCustomRegistry(Class registryClass){
+		IRegistry returner = null;
+		for (IRegistry reg : customRegistries){
+			if (reg.getClass() == registryClass) returner = reg;
+		}
+		
+		return returner;
+	}
+	
+	public static void constructGridManagerRegistry(){
+		gridRegistry = new GridManagerRegistry();
+	}
+	
+	public static GridManagerRegistry getGridManagerRegistry(){
+		return gridRegistry;
+	}
+	
+	public static boolean removeCustomRegistry(IRegistry reg){
+		return customRegistries.remove(reg);
+	}
 	
 	public static void setServerRegistry(MinecraftServer server){
 		serverRegistry = new ServerRegistry(server);
@@ -66,14 +96,6 @@ public class RegistryRegistry {
 	
 	public static void constructMiscRegistry(){
 		miscRegistry = new MiscRegistry();
-	}
-	
-	public static void constructGridRegistry(){
-		gridRegistry = new GridRegistry();
-	}
-	
-	public static GridRegistry getGridRegistry(){
-		return gridRegistry;
 	}
 	
 	public static MiscRegistry getMiscRegistry(){
@@ -92,7 +114,12 @@ public class RegistryRegistry {
 		if(!initFirstTime) initFirstTime = false; //Initialize
 		serverRegistrySetForCurrentSession = false; //Reset this
 		serverRegistry = null; //in any case, reset the server registry
-		gridRegistry = null;
+		gridRegistry = null; //reset this too
+		for(IRegistry registry : customRegistries){
+			if(registry.getResttable()){
+				registry = null;
+			}
+		}
 		if(!initFirstTime && FMLCommonHandler.instance().getSide() == Side.CLIENT) clientRegistry = null; //if we're initializing and we are on a client, initialize it
 		if(!initFirstTime) initFirstTime = true; //if this is the fist time initializing, set a marker that the next call of this function isn't the first time this function is being called
 	}

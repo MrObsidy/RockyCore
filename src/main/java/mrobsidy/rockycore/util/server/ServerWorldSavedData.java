@@ -27,7 +27,7 @@ package mrobsidy.rockycore.util.server;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.gridnetworks.internal.GridRegistry;
+import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.Debug;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +35,7 @@ import net.minecraft.world.storage.WorldSavedData;
 
 public class ServerWorldSavedData extends WorldSavedData {
 	
-	public static final String NAME = "ROCKYCOREDATA";
+	public static final String NAME = "rockycore";
 	
 	public ServerWorldSavedData(){
 		this(NAME);
@@ -71,8 +71,8 @@ public class ServerWorldSavedData extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		savedData = nbt;
-		GridRegistry reg = RegistryRegistry.getGridRegistry();
-		reg.reassembleGrids(nbt);
+		GridManagerRegistry man = RegistryRegistry.getGridManagerRegistry();
+		man.reconstruct(nbt);
 	}
 
 	@Override
@@ -84,7 +84,6 @@ public class ServerWorldSavedData extends WorldSavedData {
 		Debug.debug("Default data: " + compound.toString());
 		
 		attachedData.clear();
-		
 		return compound;
 	}
 

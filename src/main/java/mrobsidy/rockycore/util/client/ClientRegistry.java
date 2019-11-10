@@ -26,8 +26,8 @@
 package mrobsidy.rockycore.util.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
 
 @SideOnly(Side.CLIENT)
 public class ClientRegistry {

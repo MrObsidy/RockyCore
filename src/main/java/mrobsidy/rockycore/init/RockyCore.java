@@ -25,11 +25,18 @@
 
 package mrobsidy.rockycore.init;
 
+import mrobsidy.rockycore.example.ExampleBlockConsumer;
+import mrobsidy.rockycore.example.ExampleTileConsumer;
+import mrobsidy.rockycore.example.ExampleTileGenerator;
 import mrobsidy.rockycore.misc.CommandRockyCore;
+import mrobsidy.rockycore.misc.Debug;
 import mrobsidy.rockycore.util.client.ClientEvents;
 import mrobsidy.rockycore.util.server.ServerEvents;
 import mrobsidy.rockycore.util.server.ServerGameDataSaver;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -39,10 +46,13 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+
 
 
 /**
@@ -57,17 +67,24 @@ import net.minecraftforge.fml.relauncher.Side;
 public class RockyCore {
 	public static final String MODID = "rockycore";
 	public static final String MODNAME = "RockyCore";
+
 	
 	@Mod.Instance
 	public RockyCore instance;
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event){
+		
+		GameRegistry.registerTileEntity(ExampleTileConsumer.class, "rockycore:exampleconsumer");
+		GameRegistry.registerTileEntity(ExampleTileGenerator.class, "rockycore:examplegenerator");
+		
 		MinecraftForge.EVENT_BUS.register(new ServerEvents());
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
 			MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		RegistryRegistry.initAndReset();
 		RegistryRegistry.constructMiscRegistry();
+		
+		
 	}
 	
 	@Mod.EventHandler
@@ -79,13 +96,16 @@ public class RockyCore {
 	
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event){
+		RegistryRegistry.constructGridManagerRegistry();
+	}
+	
+	public void serverAboutToStart(FMLServerAboutToStartEvent event){
 		
 	}
 	
 	@Mod.EventHandler
 	public void serverStart(FMLServerStartingEvent event){
 		RegistryRegistry.setServerRegistry(event.getServer());
-		RegistryRegistry.constructGridRegistry();
 		event.registerServerCommand(new CommandRockyCore());
 		//ForgeVersion.getResult(this);
 	}
@@ -103,12 +123,13 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void serverStopped(){
 		RegistryRegistry.initAndReset();
+		RegistryRegistry.constructGridManagerRegistry();
 	}
 	
 	@Mod.EventHandler
 	public void IMCMessage(IMCEvent event){
 		for(FMLInterModComms.IMCMessage message : event.getMessages()){
-			
+			Debug.debug(message.getStringValue());
 		}
 	}
 }

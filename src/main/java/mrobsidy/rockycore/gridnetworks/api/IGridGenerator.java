@@ -1,64 +1,33 @@
+/**
+ * 
+ *  RockyCore
+ *  Copyright (C) 2018-2019 MrObsidy
+ *  
+ *  
+ *  This file is part of RockyCore.
+ *
+ *  RockyCore is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  RockyCore is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with RockyCore.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
 package mrobsidy.rockycore.gridnetworks.api;
 
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-
 public interface IGridGenerator {
+	public String getGridType();
+	public void sendPacket();
+	public void handleConnection(IGridConsumer consumer);
 	
-	public static final int IO_INDIFFERENT = 0;
-	public static final int IO_OUTPUT = 1;
-	
-	/**
-	 * 
-	 * Gets the position. Different method names so that one can implement
-	 * user and generator at the same time (aka Storage etc.)
-	 * 
-	 * @return
-	 */
-	public BlockPos getPosit();
-	
-	/**
-	 * 
-	 * Gets the dimension. Different method names so that one can implement
-	 * user and generator at the same time (aka Storage etc.)
-	 * 
-	 * @return
-	 */
-	public int getDimen();
-	
-	/**
-	 * 
-	 * Gets whether this side outputs or does nothing.
-	 * 
-	 * @param direction
-	 * @return
-	 */
-	public int getOutputFunctionForSide(EnumFacing direction);
-	
-	/**
-	 * 
-	 * Sets whether this side outputs or does nothing.
-	 * 
-	 * @param direction
-	 * @param function
-	 */
-	public void setOutputFunctionForSide(EnumFacing direction, int function);
-	
-	/**
-	 * 
-	 * Gets the voltage this thing outputs.
-	 * 
-	 * @return
-	 */
-	public int getOutputVoltage();
-	
-	/**
-	 * 
-	 * Gets the amperage this thing outputs.
-	 * 
-	 * @return
-	 */
-	public int getOutputAmperage();
-	
-	
+	public float getPowerOutput();
 }

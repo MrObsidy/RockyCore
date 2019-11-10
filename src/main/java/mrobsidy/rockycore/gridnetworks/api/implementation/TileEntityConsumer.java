@@ -22,19 +22,18 @@
  *
  */
 
+package mrobsidy.rockycore.gridnetworks.api.implementation;
 
-package mrobsidy.rockycore.util.client;
+import mrobsidy.rockycore.gridnetworks.api.IGridConsumer;
+import mrobsidy.rockycore.gridnetworks.internal.GridPacket;
+import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.Debug;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.relauncher.Side;
-
-/**
- * Client Event stuff.
- * 
- * @author mrobsidy
- *
- */
-@SideOnly(Side.CLIENT)
-public class ClientEvents {
-	
+public abstract class TileEntityConsumer extends TileEntity implements IGridConsumer, ITickable {
+	@Override
+	public void onLoad(){
+		RegistryRegistry.getGridManagerRegistry().addConsumer(this);
+	}
 }

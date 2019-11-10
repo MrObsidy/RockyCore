@@ -22,19 +22,22 @@
  *
  */
 
+package mrobsidy.rockycore.gridnetworks.internal;
 
-package mrobsidy.rockycore.util.client;
-
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.relauncher.Side;
-
-/**
- * Client Event stuff.
- * 
- * @author mrobsidy
- *
- */
-@SideOnly(Side.CLIENT)
-public class ClientEvents {
+public final class GridConnectionSegment {
+	private final float voltage;
+	private final float resistance;
 	
+	public GridConnectionSegment(float volt, float res){
+		this.voltage = volt;
+		this.resistance = res;
+	}
+	
+	public float getVoltage(){
+		return this.voltage;
+	}
+	
+	public float getResistance(){
+		return this.resistance;
+	}
 }
