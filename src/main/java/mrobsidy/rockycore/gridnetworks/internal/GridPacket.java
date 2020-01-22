@@ -26,17 +26,17 @@ package mrobsidy.rockycore.gridnetworks.internal;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.gridnetworks.api.IGridGenerator;
+import mrobsidy.rockycore.gridnetworks.api.TileEntityGenerator;
 
 public final class GridPacket {
 	
-	private final IGridGenerator generator;
+	private final TileEntityGenerator generator;
 	private final ArrayList<Integer> visitedNodes;
 	private final ArrayList<GridConnectionSegment> segments;
 	private final float voltage;
 	
 	
-	public GridPacket(ArrayList<Integer> visitedNodes, ArrayList<GridConnectionSegment> segments, float voltage, IGridGenerator offerer){
+	public GridPacket(ArrayList<Integer> visitedNodes, ArrayList<GridConnectionSegment> segments, float voltage, TileEntityGenerator offerer){
 		this.visitedNodes = visitedNodes;
 		this.segments = segments;
 		this.voltage = voltage;
@@ -51,7 +51,7 @@ public final class GridPacket {
 		return this.visitedNodes;
 	}
 
-	public IGridGenerator getGenerator() {
+	public TileEntityGenerator getGenerator() {
 		return this.generator;
 	}
 }

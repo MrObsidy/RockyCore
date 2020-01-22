@@ -32,7 +32,8 @@ import mrobsidy.rockycore.example.ExampleBlockGenerator;
 import mrobsidy.rockycore.example.ExampleBlockNode;
 import mrobsidy.rockycore.example.ExampleCreativeTab;
 import mrobsidy.rockycore.init.RegistryRegistry;
-import mrobsidy.rockycore.misc.Debug;
+import mrobsidy.rockycore.misc.debug.Debug;
+import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
 import mrobsidy.rockycore.registries.api.CustomData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -99,18 +100,18 @@ public class ServerEvents {
 	@SubscribeEvent
 	public void onWorldSave(WorldEvent.Save event){
 		if(event.getWorld().isRemote == true){
-			Debug.debug("Client side thread detected, discarding WorldEvent.Save");
+			Debug.INSTANCE.debug("Client side thread detected, discarding WorldEvent.Save", EnumDebugType.DEBUG);
 			return;
 		}
 		
-		Debug.debug("Custom world data is now saving");
+		Debug.INSTANCE.debug("Custom world data is now saving", EnumDebugType.DEBUG);
 		
 		ArrayList<NBTTagCompound> cmpndData = ServerGameDataSaver.relay();
 		
 		MapStorage storage = event.getWorld().getMapStorage();
 		ServerWorldSavedData data = (ServerWorldSavedData) storage.getOrLoadData(ServerWorldSavedData.class, ServerWorldSavedData.NAME);
 		
-		Debug.debug("Custom data: ");
+		Debug.INSTANCE.debug("Custom data: ", EnumDebugType.INFO);
 		
 		if (data == null) {
 		    data = new ServerWorldSavedData();
@@ -123,6 +124,6 @@ public class ServerEvents {
 		
 		data.debug();
 		
-		Debug.debug("Saved world data");
+		Debug.INSTANCE.debug("Saved world data", EnumDebugType.INFO);
 	}
 }

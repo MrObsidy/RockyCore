@@ -1,7 +1,7 @@
 /**
  * 
  *  RockyCore
- *  Copyright (C) 2018-2019 MrObsidy
+ *  Copyright (C) 2018-2020 MrObsidy
  *  
  *  
  *  This file is part of RockyCore.

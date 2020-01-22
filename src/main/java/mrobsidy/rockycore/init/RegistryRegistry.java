@@ -75,6 +75,7 @@ public class RegistryRegistry {
 	
 	public static void constructGridManagerRegistry(){
 		gridRegistry = new GridManagerRegistry();
+		gridRegistry.initReconstruction();
 	}
 	
 	public static GridManagerRegistry getGridManagerRegistry(){
@@ -116,9 +117,7 @@ public class RegistryRegistry {
 		serverRegistry = null; //in any case, reset the server registry
 		gridRegistry = null; //reset this too
 		for(IRegistry registry : customRegistries){
-			if(registry.getResttable()){
-				registry = null;
-			}
+			registry.reset();
 		}
 		if(!initFirstTime && FMLCommonHandler.instance().getSide() == Side.CLIENT) clientRegistry = null; //if we're initializing and we are on a client, initialize it
 		if(!initFirstTime) initFirstTime = true; //if this is the fist time initializing, set a marker that the next call of this function isn't the first time this function is being called

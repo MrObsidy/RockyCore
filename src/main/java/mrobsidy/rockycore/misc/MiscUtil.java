@@ -32,8 +32,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MiscUtil {
-	public static World getServerWorld(int dim){
-		return RegistryRegistry.getServerRegistry().getServer().getEntityWorld();
+	
+	/**
+	 * 
+	 * Seriously, don't use it. Will be removed and is only here for convenience's sake.
+	 * 
+	 * @param dim
+	 * @return
+	 */
+	@Deprecated
+	public static World getServerWorld(int dim) {
+		return RegistryRegistry.getServerRegistry().getServer().getWorld(dim);
 	}
 	
 	public static BlockHelper getBlockAtPos(BlockPos pos, int dim){

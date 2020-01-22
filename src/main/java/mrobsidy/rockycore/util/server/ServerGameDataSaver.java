@@ -90,7 +90,7 @@ public class ServerGameDataSaver {
 	public static ArrayList<NBTTagCompound> relay(){
 		ArrayList<NBTTagCompound> returnables = new ArrayList<NBTTagCompound>();
 		
-		returnables.add(RegistryRegistry.getGridManagerRegistry().getSaveData());
+		//returnables.add(RegistryRegistry.getGridManagerRegistry().getSaveData());
 		
 		return returnables;
 	}

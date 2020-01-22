@@ -29,7 +29,8 @@ import java.util.ArrayList;
 
 import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
-import mrobsidy.rockycore.misc.Debug;
+import mrobsidy.rockycore.misc.debug.Debug;
+import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -50,7 +51,7 @@ public class ServerWorldSavedData extends WorldSavedData {
 	private NBTTagCompound savedData;
 	
 	public void debug(){
-		Debug.debug("Attached data count: " + attachedData.size());
+		Debug.INSTANCE.debug("Attached data count: " + attachedData.size(), EnumDebugType.INFO);
 	}
 	
 	public void registerCustomSaveData(NBTTagCompound data){
@@ -71,17 +72,17 @@ public class ServerWorldSavedData extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		savedData = nbt;
-		GridManagerRegistry man = RegistryRegistry.getGridManagerRegistry();
-		man.reconstruct(nbt);
+		//GridManagerRegistry man = RegistryRegistry.getGridManagerRegistry();
+		//man.reconstruct(nbt);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		for(NBTTagCompound tag : attachedData){
 			compound.setTag(tag.getString("rockycore_DATA"), tag);
-			Debug.debug("Custom Data: " + tag.toString());
+			Debug.INSTANCE.debug("Custom Data: " + tag.toString(), EnumDebugType.DEBUG);
 		}
-		Debug.debug("Default data: " + compound.toString());
+		Debug.INSTANCE.debug("Default data: " + compound.toString(), EnumDebugType.DEBUG);
 		
 		attachedData.clear();
 		return compound;

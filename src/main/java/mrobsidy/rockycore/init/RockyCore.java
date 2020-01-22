@@ -28,8 +28,10 @@ package mrobsidy.rockycore.init;
 import mrobsidy.rockycore.example.ExampleBlockConsumer;
 import mrobsidy.rockycore.example.ExampleTileConsumer;
 import mrobsidy.rockycore.example.ExampleTileGenerator;
+import mrobsidy.rockycore.gridnetworks.api.TileGridNode;
 import mrobsidy.rockycore.misc.CommandRockyCore;
-import mrobsidy.rockycore.misc.Debug;
+import mrobsidy.rockycore.misc.debug.Debug;
+import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
 import mrobsidy.rockycore.util.client.ClientEvents;
 import mrobsidy.rockycore.util.server.ServerEvents;
 import mrobsidy.rockycore.util.server.ServerGameDataSaver;
@@ -75,8 +77,11 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		
+		System.out.println("[RockyCore] preInit event received");
+		
 		GameRegistry.registerTileEntity(ExampleTileConsumer.class, "rockycore:exampleconsumer");
 		GameRegistry.registerTileEntity(ExampleTileGenerator.class, "rockycore:examplegenerator");
+		GameRegistry.registerTileEntity(TileGridNode.class, "rockycore:gridnode");
 		
 		MinecraftForge.EVENT_BUS.register(new ServerEvents());
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
@@ -89,6 +94,9 @@ public class RockyCore {
 	
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
+		System.out.println("[RockyCore] init event received");
+		RegistryRegistry.constructGridManagerRegistry();
+		
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
 			RegistryRegistry.setClientRegistry(Minecraft.getMinecraft());
 		}
@@ -96,40 +104,51 @@ public class RockyCore {
 	
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event){
-		RegistryRegistry.constructGridManagerRegistry();
+		System.out.println("[RockyCore] postInit event received");
+		RegistryRegistry.getGridManagerRegistry().initReconstruction();
 	}
 	
 	public void serverAboutToStart(FMLServerAboutToStartEvent event){
+		System.out.println("[RockyCore] ServerAboutToStart event received");
 		
+
 	}
 	
 	@Mod.EventHandler
 	public void serverStart(FMLServerStartingEvent event){
+		System.out.println("[RockyCore] serverStart event received");
 		RegistryRegistry.setServerRegistry(event.getServer());
 		event.registerServerCommand(new CommandRockyCore());
-		//ForgeVersion.getResult(this);
-	}
+		
+		RegistryRegistry.getGridManagerRegistry().reconstruct();
+		RegistryRegistry.getGridManagerRegistry().garbageCollection();
 	
-	@Mod.EventHandler
-	public void serverStarted(FMLServerStartedEvent event){
 		
 	}
 	
 	@Mod.EventHandler
-	public void serverStopping(FMLServerStoppingEvent event){
-		//ServerGameDataSaver.saveObjectsToDisk(RegistryRegistry.getGridRegistry().getGridManagers(), "data/gridData/gridData.dat");
+	public void serverStarted(FMLServerStartedEvent event){
+		System.out.println("[RockyCore] serverStarted event received");
 	}
 	
 	@Mod.EventHandler
-	public void serverStopped(){
+	public void serverStopping(FMLServerStoppingEvent event){
+		System.out.println("[RockyCore] serverStopping event received");
+		//ServerGameDataSaver.saveObjectsToDisk(RegistryRegistry.getGridRegistry().getGridManagers(), "data/gridData/gridData.dat");
 		RegistryRegistry.initAndReset();
 		RegistryRegistry.constructGridManagerRegistry();
 	}
 	
 	@Mod.EventHandler
+	public void serverStopped(){
+		System.out.println("[RockyCore] serverStopped event received");
+		
+	}
+	
+	@Mod.EventHandler
 	public void IMCMessage(IMCEvent event){
 		for(FMLInterModComms.IMCMessage message : event.getMessages()){
-			Debug.debug(message.getStringValue());
+			Debug.INSTANCE.debug(message.getStringValue(), EnumDebugType.INFO);
 		}
 	}
 }

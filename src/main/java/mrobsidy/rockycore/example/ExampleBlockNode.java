@@ -1,15 +1,18 @@
 package mrobsidy.rockycore.example;
 
-import mrobsidy.rockycore.gridnetworks.api.IGridConsumer;
-import mrobsidy.rockycore.gridnetworks.api.implementation.BlockNode;
-import mrobsidy.rockycore.gridnetworks.internal.GridNode;
-import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.gridnetworks.api.BlockNode;
+import mrobsidy.rockycore.gridnetworks.api.TileGridNode;
+import mrobsidy.rockycore.misc.debug.Debug;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-//the rest is done automatically 
+/**
+ * Example implementation of a node
+ * 
+ * @author alexander
+ *
+ */
 public class ExampleBlockNode extends BlockNode {
 
 	public ExampleBlockNode(Material materialIn) {
@@ -17,14 +20,14 @@ public class ExampleBlockNode extends BlockNode {
 	}
 
 	@Override
-	public float getResistance() {
-		return 0f;
-		//zero resistance wire is spectacular
-	}
-
-	@Override
-	public String getGridType() {
-		return "ELECTRIC";
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	
+		if(worldIn.isRemote) return null;
+		
+		TileGridNode node = new TileGridNode();
+		node.setGridType("ELECTRIC");
+		node.setWorld(worldIn);
+		return node;
 	}
 
 }

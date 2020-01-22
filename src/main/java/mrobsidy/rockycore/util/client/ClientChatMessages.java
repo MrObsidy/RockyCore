@@ -26,6 +26,7 @@
 package mrobsidy.rockycore.util.client;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.debug.Debug;
 import mrobsidy.rockycore.util.server.ServerChatMessages;
 import net.minecraft.util.text.TextComponentString;
 
@@ -50,6 +51,6 @@ public class ClientChatMessages {
 	 * @param text
 	 */
 	public static void sendMessageToThePlayer(String text){
-		RegistryRegistry.getClientRegistry().getClient().player.sendMessage(new TextComponentString(ServerChatMessages.PREFIX + text));
+		RegistryRegistry.getClientRegistry().getClient().player.sendMessage(new TextComponentString(Debug.getPrefix() + text));
 	}
 }

@@ -27,6 +27,7 @@ package mrobsidy.rockycore.util.server;
 
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.ChatFormats;
+import mrobsidy.rockycore.misc.debug.Debug;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -39,15 +40,18 @@ import net.minecraft.world.World;
  */
 public class ServerChatMessages {
 	
-	public static final String PREFIX = getColorAddition(ChatFormats.YELLOW) + getColorAddition(ChatFormats.BOLD) + "[RockyCore] " + getColorAddition(ChatFormats.CMD_RESET);
 	
 	public static void sendMessage(String text){
-		for (World world : RegistryRegistry.getServerRegistry().getServer().worlds){
-			for (Object player : world.playerEntities){
-					((EntityPlayer) player).sendMessage(new TextComponentString(PREFIX + text));
-				}
-			}
 		
+		if(RegistryRegistry.getServerRegistry() == null) {
+			System.out.println("[RockyCore] " + text);
+		}
+		
+		for (World world : RegistryRegistry.getServerRegistry().getServer().worlds){
+			for (EntityPlayer player : world.playerEntities){
+					player.sendMessage(new TextComponentString(Debug.getPrefix() + text));
+			}
+		}
 	}
 	
 	public static String getColorAddition(ChatFormats format){

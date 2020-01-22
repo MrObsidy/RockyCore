@@ -27,6 +27,7 @@ package mrobsidy.rockycore.config;
 
 import net.minecraftforge.common.config.Configuration;
 
+//TODO
 public class Config {
 	private static Configuration config;
 	
