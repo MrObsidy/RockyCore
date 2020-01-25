@@ -37,7 +37,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class Debug implements IDebugWriter {	
 	
-	public static final Debug INSTANCE = new Debug();
+	//initialize this with the default debugger
+	private static  IDebugWriter INSTANCE = new Debug();
 	
 	private static EnumDebugMode debugMode;
 	
@@ -45,12 +46,21 @@ public class Debug implements IDebugWriter {
 	
 	private static final String PREFIX_ROCKYCORE = ServerChatMessages.getColorAddition(ChatFormats.YELLOW)+ ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[RockyCore] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
 	private static final String PREFIX_DEBUG = ServerChatMessages.getColorAddition(ChatFormats.WHITE) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[DEBUG] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);	
-	private static final String PREFIX_INFO = ServerChatMessages.getColorAddition(ChatFormats.GREEN) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[DEBUG] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
-	private static final String PREFIX_WARNING = ServerChatMessages.getColorAddition(ChatFormats.LIGHT_PURPLE) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[DEBUG] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
-	private static final String PREFIX_ERROR = ServerChatMessages.getColorAddition(ChatFormats.RED) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[DEBUG] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
+	private static final String PREFIX_INFO = ServerChatMessages.getColorAddition(ChatFormats.GREEN) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[INFO] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
+	private static final String PREFIX_WARNING = ServerChatMessages.getColorAddition(ChatFormats.LIGHT_PURPLE) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[WARNING] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
+	private static final String PREFIX_ERROR = ServerChatMessages.getColorAddition(ChatFormats.RED) + ServerChatMessages.getColorAddition(ChatFormats.BOLD) + "[ERROR] " + ServerChatMessages.getColorAddition(ChatFormats.CMD_RESET);
 	
 	public EnumDebugType getLevel() {
 		return this.level;
+	}
+	
+	public static void setDebugger(IDebugWriter debugger) {
+		debugger = null;
+		INSTANCE = debugger;
+	}
+	
+	public static IDebugWriter getDebugger() {
+		return INSTANCE;
 	}
 	
 	private static String getAppropriatePrefix(EnumDebugType type) {
@@ -99,7 +109,7 @@ public class Debug implements IDebugWriter {
 				e.printStackTrace();
 				return;
 			}
-				
+			
 			if(EnumDebugType.getPriority(type, this.level)) {
 				ServerChatMessages.sendMessage(getAppropriatePrefix(type) + text);
 			}
@@ -114,6 +124,4 @@ public class Debug implements IDebugWriter {
 			}
 		}
 	}
-
-	
 }

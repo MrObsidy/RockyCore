@@ -45,6 +45,7 @@ public class ServerChatMessages {
 		
 		if(RegistryRegistry.getServerRegistry() == null) {
 			System.out.println("[RockyCore] " + text);
+			return;
 		}
 		
 		for (World world : RegistryRegistry.getServerRegistry().getServer().worlds){

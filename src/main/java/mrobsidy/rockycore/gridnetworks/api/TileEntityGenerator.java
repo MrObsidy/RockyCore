@@ -51,6 +51,10 @@ public abstract class TileEntityGenerator extends TileEntity implements ITickabl
 		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
 	}
 	
+	public abstract void requestPower(TileEntityConsumer caller, float power);
+	
+	public abstract float getVoltage();
+	
 	public String getGridType() {
 		return this.gridType;
 	}
@@ -58,8 +62,6 @@ public abstract class TileEntityGenerator extends TileEntity implements ITickabl
 	public void setGridType(String parType) {
 		this.gridType = parType;
 	}
-	
-	public abstract float getVoltage();
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -83,25 +85,24 @@ public abstract class TileEntityGenerator extends TileEntity implements ITickabl
 		
 		segments.add(new GridConnectionSegment(this.getVoltage(), 0f));
 		
-		Debug.INSTANCE.debug("Generator @ " + this.getPos().toString() + " is sending packets...", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Generator @ " + this.getPos().toString() + " is sending packets...", EnumDebugType.DEBUG);
 		ArrayList<TileGridNode> nodes = RegistryRegistry.getGridManagerRegistry().getSurroundingNodes(this.getPos(), this.getWorld().provider.getDimension(), this.getGridType());
-		Debug.INSTANCE.debug("Surronding nodes: " + nodes.size(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Surronding nodes: " + nodes.size(), EnumDebugType.DEBUG);
 		for(TileGridNode node : nodes){
-			Debug.INSTANCE.debug("Forwarding packet...", EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Forwarding packet...", EnumDebugType.DEBUG);
 			node.processPacket(new GridPacket(new ArrayList<Integer>(), segments, this.getVoltage(), this));
 		}
 		
 		ArrayList<TileEntityConsumer> consumers = RegistryRegistry.getGridManagerRegistry().getSurroundingConsumers(this.getPos(), this.getWorld().provider.getDimension(), this.getGridType());
 		for(TileEntityConsumer consumer : consumers){
-			Debug.INSTANCE.debug("Forwarding packet...", EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Forwarding packet...", EnumDebugType.DEBUG);
 			consumer.processPacket(new GridPacket(new ArrayList<Integer>(), segments, this.getVoltage(), this));
 		}
 	}
 
-	public abstract void handleConnection(TileEntityConsumer consumer);
-	
 	@Override
 	public void onLoad(){
 		RegistryRegistry.getGridManagerRegistry().addGenerator(this);
+		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
 	}
 }

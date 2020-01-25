@@ -70,58 +70,58 @@ public class CommandRockyCore extends CommandBase{
 			
 			if (args[0].equalsIgnoreCase("debugmode")){
 				if (args[1].equalsIgnoreCase("console")){
-					Debug.INSTANCE.setDebugMode(EnumDebugMode.CONSOLE);
+					Debug.getDebugger().setDebugMode(EnumDebugMode.CONSOLE);
 					if(args[2].equalsIgnoreCase("debug")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.DEBUG);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.DEBUG);
 					} else if(args[2].equalsIgnoreCase("info")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.INFO);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.INFO);
 					} else if(args[2].equalsIgnoreCase("warning")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.WARNING);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.WARNING);
 					} else if(args[2].equalsIgnoreCase("error")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.ERROR);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.ERROR);
 					} else {
 						sender.sendMessage(new TextComponentString("Your debug mode was not recognized. Known modes are debug, info, warning and error."));
 					}
 
 				} else if (args[1].equalsIgnoreCase("client")){
-					Debug.INSTANCE.setDebugMode(EnumDebugMode.CLIENT);
+					Debug.getDebugger().setDebugMode(EnumDebugMode.CLIENT);
 					//Debug.debug("Please note that client mode debug doesn't work properly when on multiplayer servers.");
 					if(args[2].equalsIgnoreCase("debug")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.DEBUG);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.DEBUG);
 					} else if(args[2].equalsIgnoreCase("info")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.INFO);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.INFO);
 					} else if(args[2].equalsIgnoreCase("warning")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.WARNING);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.WARNING);
 					} else if(args[2].equalsIgnoreCase("error")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.ERROR);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.ERROR);
 					} else {
 						sender.sendMessage(new TextComponentString("Your debug mode was not recognized. Known modes are debug, info, warning and error."));
 					}
 
 				} else if (args[1].equalsIgnoreCase("server")){
-					Debug.INSTANCE.setDebugMode(EnumDebugMode.SERVER);
+					Debug.getDebugger().setDebugMode(EnumDebugMode.SERVER);
 					if(args[2].equalsIgnoreCase("debug")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.DEBUG);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.DEBUG);
 					} else if(args[2].equalsIgnoreCase("info")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.INFO);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.INFO);
 					} else if(args[2].equalsIgnoreCase("warning")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.WARNING);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.WARNING);
 					} else if(args[2].equalsIgnoreCase("error")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.ERROR);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.ERROR);
 					} else {
 						sender.sendMessage(new TextComponentString("Your debug mode was not recognized. Known modes are debug, info, warning and error."));
 					}
 
 				} else if (args[1].equalsIgnoreCase("off")){
-					Debug.INSTANCE.setDebugMode(EnumDebugMode.OFF);
+					Debug.getDebugger().setDebugMode(EnumDebugMode.OFF);
 					if(args[2].equalsIgnoreCase("debug")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.DEBUG);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.DEBUG);
 					} else if(args[2].equalsIgnoreCase("info")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.INFO);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.INFO);
 					} else if(args[2].equalsIgnoreCase("warning")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.WARNING);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.WARNING);
 					} else if(args[2].equalsIgnoreCase("error")) {
-						Debug.INSTANCE.setDebugPriority(EnumDebugType.ERROR);
+						Debug.getDebugger().setDebugPriority(EnumDebugType.ERROR);
 					} else {
 						sender.sendMessage(new TextComponentString("Your debug mode was not recognized. Known modes are debug, info, warning and error."));
 					}
@@ -133,7 +133,7 @@ public class CommandRockyCore extends CommandBase{
 				}
 				
 				
-				Debug.INSTANCE.debug("Debug mode set to: " + Debug.INSTANCE.getDebugMode() + ", severity level: " + Debug.INSTANCE.getLevel(), EnumDebugType.INFO);
+				Debug.getDebugger().debug("Debug mode set to: " + Debug.getDebugger().getDebugMode() + ", severity level: " + Debug.getDebugger().getLevel(), EnumDebugType.INFO);
 
 			} else if (args[0].equalsIgnoreCase("gridmanager")) {
 				if(args[1].equalsIgnoreCase("list")) {
@@ -144,7 +144,7 @@ public class CommandRockyCore extends CommandBase{
 					}
 					sender.sendMessage(new TextComponentString(Debug.getPrefix() + "Done."));
 				} else if(args[1].equalsIgnoreCase("rungc")) {
-					Debug.INSTANCE.debug("Running garbage collection.. (Output is in console)", EnumDebugType.WARNING);
+					Debug.getDebugger().debug("Running garbage collection.. (Output is in console)", EnumDebugType.WARNING);
 					RegistryRegistry.getGridManagerRegistry().garbageCollection();
 				} else if(args[1].equalsIgnoreCase("dump")) {
 					RegistryRegistry.getGridManagerRegistry().dump();
@@ -178,9 +178,9 @@ public class CommandRockyCore extends CommandBase{
 					ServerChatMessages.sendMessage("WARNING - POSSIBLE SERVER LAG INCOMING! Player " + sender.getName() + " is listing/forcing packets for a grid manager. This may take a moment.");
 					
 					for(GridManager man : mans) {
-						Debug.INSTANCE.debug("Checking Manager of type " + man.getGridType() + " with parMan " + parMan, EnumDebugType.DEBUG);
+						Debug.getDebugger().debug("Checking Manager of type " + man.getGridType() + " with parMan " + parMan, EnumDebugType.DEBUG);
 						if(man.getGridType().contentEquals(parMan)) {
-							Debug.INSTANCE.debug("Found manager! Trying to find ", EnumDebugType.DEBUG);
+							Debug.getDebugger().debug("Found manager! Trying to find ", EnumDebugType.DEBUG);
 							if(args[3].equalsIgnoreCase("listnodes")) {
 								ArrayList<TileGridNode> nodes = man.getNodes();
 								for(TileGridNode node : nodes) {
@@ -226,11 +226,7 @@ public class CommandRockyCore extends CommandBase{
 		} catch (Exception e){
 			//Don't print it, this will be put out evertime.
 			
-			Debug.INSTANCE.debug(e.getMessage(), EnumDebugType.DEBUG);
-			for(StackTraceElement message : e.getStackTrace()){
-				Debug.INSTANCE.debug(message.toString(), EnumDebugType.DEBUG);
-				Debug.INSTANCE.debug("You can ignore this error as there is no way around it. No idea how to check for an empty array otherwise, sorry for spamming your log :/", EnumDebugType.DEBUG);
-			}
+			e.printStackTrace();
 		}
 	}
 }

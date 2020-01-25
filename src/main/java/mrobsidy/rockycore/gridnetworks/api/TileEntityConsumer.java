@@ -24,14 +24,28 @@
 
 package mrobsidy.rockycore.gridnetworks.api;
 
+import java.util.ArrayList;
+
 import mrobsidy.rockycore.gridnetworks.internal.GridPacket;
 import mrobsidy.rockycore.init.RegistryRegistry;
+import mrobsidy.rockycore.misc.MiscUtil;
 import mrobsidy.rockycore.misc.debug.Debug;
+import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
+import mrobsidy.rockycore.util.misc.helpers.BlockHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 
+/**
+ * Base class for TileEntityConsumers. Extend this for custom Energy Consumers.
+ * 
+ * 
+ * @author mrobsidy
+ *
+ */
 public abstract class TileEntityConsumer extends TileEntity implements  ITickable {
+	
+	public final ArrayList<TileEntityGenerator> providingGenerators = new ArrayList<TileEntityGenerator>();
 	
 	public TileEntityConsumer() {
 		
@@ -39,17 +53,28 @@ public abstract class TileEntityConsumer extends TileEntity implements  ITickabl
 	
 	private String gridType;
 	
-	public void register() {
-		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
-	}
-	
 	@Override
+	/**
+	 * If you override this, run super.onLoad();
+	 * 
+	 */
 	public void onLoad(){
 		RegistryRegistry.getGridManagerRegistry().addConsumer(this);
+		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
 	}
 
-	public abstract float receivePower(float voltage, float f);
-
+	/**
+	 * First, you need to call generator#requestPower(this, power);
+	 * 
+	 * 
+	 * Then, this gets called by the generator with an "energy packet" with voltage and amperage that you can work with.
+	 * 
+	 * @param voltage
+	 * @param amperage
+	 * @return
+	 */
+	public abstract float receivePower(float voltage, float amperage);
+	
 	public void setGridType(String parType) {
 		this.gridType = parType;
 	}
@@ -73,5 +98,8 @@ public abstract class TileEntityConsumer extends TileEntity implements  ITickabl
 		return tag;
 	}	
 	
-	public abstract void processPacket(GridPacket gridPacket);
+	public final void processPacket(GridPacket packet) {
+		Debug.getDebugger().debug("Received packet: " + packet.toString() + " from " + packet.getGenerator().toString(), EnumDebugType.DEBUG);
+		this.providingGenerators.add(packet.getGenerator());
+	}
 }

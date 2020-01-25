@@ -51,7 +51,7 @@ public class ServerWorldSavedData extends WorldSavedData {
 	private NBTTagCompound savedData;
 	
 	public void debug(){
-		Debug.INSTANCE.debug("Attached data count: " + attachedData.size(), EnumDebugType.INFO);
+		Debug.getDebugger().debug("Attached data count: " + attachedData.size(), EnumDebugType.DEBUG);
 	}
 	
 	public void registerCustomSaveData(NBTTagCompound data){
@@ -80,9 +80,9 @@ public class ServerWorldSavedData extends WorldSavedData {
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		for(NBTTagCompound tag : attachedData){
 			compound.setTag(tag.getString("rockycore_DATA"), tag);
-			Debug.INSTANCE.debug("Custom Data: " + tag.toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Custom Data: " + tag.toString(), EnumDebugType.DEBUG);
 		}
-		Debug.INSTANCE.debug("Default data: " + compound.toString(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Default data: " + compound.toString(), EnumDebugType.DEBUG);
 		
 		attachedData.clear();
 		return compound;

@@ -10,6 +10,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/**
+ * Extend this for custom BlockGenerator classes.
+ * Make sure to override this, otherwise you might break things or need to reinvent the wheel.
+ * 
+ * 
+ * @author mrobsidy
+ *
+ */
 public abstract class BlockGenerator extends BlockContainer {
 
 	protected BlockGenerator(Material materialIn) {
@@ -20,11 +28,16 @@ public abstract class BlockGenerator extends BlockContainer {
 	public abstract TileEntity createNewTileEntity(World worldIn, int meta);
 
 	@Override
+	/**
+	 * 
+	 * If you override this, make sure to call super.breakBlock();
+	 * 
+	 */
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		
 		if(worldIn.isRemote) return;
 		
-		Debug.INSTANCE.debug("Removing TileGenerator.. " + pos.toString(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Removing TileGenerator.. " + pos.toString(), EnumDebugType.DEBUG);
 		TileEntityGenerator gen = (TileEntityGenerator) worldIn.getTileEntity(pos);
 		RegistryRegistry.getGridManagerRegistry().removeGenerator(gen);
 		worldIn.removeTileEntity(pos);

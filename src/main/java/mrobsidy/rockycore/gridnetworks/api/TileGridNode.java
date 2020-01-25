@@ -47,6 +47,10 @@ public final class TileGridNode extends TileEntity {
 		//do nothing
 	}
 	
+	public void register() {
+		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
+	}
+	
 	private String gridType;
 	
 	private float resistance;
@@ -60,7 +64,7 @@ public final class TileGridNode extends TileEntity {
 	}
 	
 	public void processPacket(GridPacket packet){
-		Debug.INSTANCE.debug("Processing a packet: " + packet.toString() + " from " + packet.getGenerator().toString(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Processing a packet: " + packet.toString() + " from " + packet.getGenerator().toString(), EnumDebugType.DEBUG);
 		ArrayList<Integer> visitedNodes = packet.getVisitedNodes();
 		ArrayList<GridConnectionSegment> segments = packet.getSegments();
 		
@@ -69,13 +73,13 @@ public final class TileGridNode extends TileEntity {
 		packet = null;
 		
 		for(int id : visitedNodes){
-			Debug.INSTANCE.debug("Visited:" + id, EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Visited:" + id, EnumDebugType.DEBUG);
 		}
 			
 		//if that packet already contains this node, return
 		//since we dont want to loop endlessly
 		if(visitedNodes.contains(this.ID)){
-			Debug.INSTANCE.debug("Aborting, already containing: " + this.ID, EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Aborting, already containing: " + this.ID, EnumDebugType.DEBUG);
 			return;
 		}
 		
@@ -88,10 +92,10 @@ public final class TileGridNode extends TileEntity {
 		
 		visitedNodes.add(this.ID);
 		
-		Debug.INSTANCE.debug("Passing on packet", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Passing on packet", EnumDebugType.DEBUG);
 		ArrayList<TileGridNode> nodes = RegistryRegistry.getGridManagerRegistry().getSurroundingNodes(this.getPos(), this.getWorld().provider.getDimension(), this.getGridType());
 		for(TileGridNode node : nodes){
-			Debug.INSTANCE.debug("Passed on packet to " + node.toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Passed on packet to " + node.toString(), EnumDebugType.DEBUG);
 			node.processPacket(new GridPacket(visitedNodes, segments, this.transformationFactor, offerer));
 		}
 		ArrayList<TileEntityConsumer> consumers = RegistryRegistry.getGridManagerRegistry().getSurroundingConsumers(this.getPos(), this.getWorld().provider.getDimension(), this.getGridType());
@@ -152,5 +156,6 @@ public final class TileGridNode extends TileEntity {
 	@Override
 	public void onLoad() {
 		RegistryRegistry.getGridManagerRegistry().addNode(this);
+		RegistryRegistry.getGridManagerRegistry().relayPacket(this.gridType);
 	}
 }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
+import mrobsidy.rockycore.multiblock.internal.ModularMultiblockRegistry;
 import mrobsidy.rockycore.registries.api.IRegistry;
 import mrobsidy.rockycore.util.client.ClientRegistry;
 import mrobsidy.rockycore.util.server.ServerRegistry;
@@ -53,6 +54,7 @@ public class RegistryRegistry {
 	private static ClientRegistry clientRegistry;
 	private static MiscRegistry miscRegistry;
 	private static GridManagerRegistry gridRegistry;
+	private static ModularMultiblockRegistry multiblockRegistry;
 	private static ArrayList<IRegistry> customRegistries = new ArrayList<IRegistry>();
 	
 	private static boolean serverRegistrySetForCurrentSession; //Set if the Server Registry is set for the current session
@@ -76,6 +78,14 @@ public class RegistryRegistry {
 	public static void constructGridManagerRegistry(){
 		gridRegistry = new GridManagerRegistry();
 		gridRegistry.initReconstruction();
+	}
+	
+	public static void constructMultiblockRegistry() {
+		multiblockRegistry = new ModularMultiblockRegistry();
+	}
+	
+	public static ModularMultiblockRegistry getMultiblockRegistry() {
+		return multiblockRegistry;
 	}
 	
 	public static GridManagerRegistry getGridManagerRegistry(){
@@ -116,6 +126,7 @@ public class RegistryRegistry {
 		serverRegistrySetForCurrentSession = false; //Reset this
 		serverRegistry = null; //in any case, reset the server registry
 		gridRegistry = null; //reset this too
+		multiblockRegistry = null; //and this
 		for(IRegistry registry : customRegistries){
 			registry.reset();
 		}

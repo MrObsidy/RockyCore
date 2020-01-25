@@ -25,9 +25,6 @@
 
 package mrobsidy.rockycore.init;
 
-import mrobsidy.rockycore.example.ExampleBlockConsumer;
-import mrobsidy.rockycore.example.ExampleTileConsumer;
-import mrobsidy.rockycore.example.ExampleTileGenerator;
 import mrobsidy.rockycore.gridnetworks.api.TileGridNode;
 import mrobsidy.rockycore.misc.CommandRockyCore;
 import mrobsidy.rockycore.misc.debug.Debug;
@@ -79,9 +76,7 @@ public class RockyCore {
 		
 		System.out.println("[RockyCore] preInit event received");
 		
-		GameRegistry.registerTileEntity(ExampleTileConsumer.class, "rockycore:exampleconsumer");
-		GameRegistry.registerTileEntity(ExampleTileGenerator.class, "rockycore:examplegenerator");
-		GameRegistry.registerTileEntity(TileGridNode.class, "rockycore:gridnode");
+		GameRegistry.registerTileEntity(TileGridNode.class, "rockycore:tilegridnode");
 		
 		MinecraftForge.EVENT_BUS.register(new ServerEvents());
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
@@ -96,6 +91,7 @@ public class RockyCore {
 	public void init(FMLInitializationEvent event){
 		System.out.println("[RockyCore] init event received");
 		RegistryRegistry.constructGridManagerRegistry();
+		RegistryRegistry.constructMultiblockRegistry();
 		
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
 			RegistryRegistry.setClientRegistry(Minecraft.getMinecraft());
@@ -137,6 +133,7 @@ public class RockyCore {
 		//ServerGameDataSaver.saveObjectsToDisk(RegistryRegistry.getGridRegistry().getGridManagers(), "data/gridData/gridData.dat");
 		RegistryRegistry.initAndReset();
 		RegistryRegistry.constructGridManagerRegistry();
+		RegistryRegistry.constructMultiblockRegistry();
 	}
 	
 	@Mod.EventHandler
@@ -148,7 +145,7 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void IMCMessage(IMCEvent event){
 		for(FMLInterModComms.IMCMessage message : event.getMessages()){
-			Debug.INSTANCE.debug(message.getStringValue(), EnumDebugType.INFO);
+			Debug.getDebugger().debug(message.getStringValue(), EnumDebugType.INFO);
 		}
 	}
 }

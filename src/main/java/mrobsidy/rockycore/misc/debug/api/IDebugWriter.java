@@ -4,4 +4,6 @@ public interface IDebugWriter {
 	public void setDebugMode(EnumDebugMode mode);
 	public void setDebugPriority(EnumDebugType type);
 	public void debug(String text, EnumDebugType type);
+	public EnumDebugMode getDebugMode();
+	public EnumDebugType getLevel();
 }

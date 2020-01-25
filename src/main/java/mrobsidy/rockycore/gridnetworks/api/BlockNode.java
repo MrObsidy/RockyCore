@@ -10,6 +10,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/**
+ * 
+ * Override this for custom BlockNodes. DO NOT OVERRIDE TILEGRIDNODE (it's final anyways) SO DO NOT!
+ * 
+ * @author mrobsidy
+ *
+ */
 public abstract class BlockNode extends BlockContainer {
 
 	protected BlockNode(Material materialIn) {
@@ -20,11 +27,15 @@ public abstract class BlockNode extends BlockContainer {
 	public abstract TileEntity createNewTileEntity(World worldIn, int meta);
 	
 	@Override
+	/**
+	 * If you override this, make sure it includes super.breakBlock();
+	 * 
+	 */
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		
 		if(worldIn.isRemote) return;
 		
-		Debug.INSTANCE.debug("Removing TileBlockNode.. " + pos.toString(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Removing TileBlockNode.. " + pos.toString(), EnumDebugType.DEBUG);
 		TileGridNode node = (TileGridNode) worldIn.getTileEntity(pos);
 		RegistryRegistry.getGridManagerRegistry().removeNode(node);
 		worldIn.removeTileEntity(pos);

@@ -27,10 +27,6 @@ package mrobsidy.rockycore.util.server;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.example.ExampleBlockConsumer;
-import mrobsidy.rockycore.example.ExampleBlockGenerator;
-import mrobsidy.rockycore.example.ExampleBlockNode;
-import mrobsidy.rockycore.example.ExampleCreativeTab;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.debug.Debug;
 import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
@@ -51,30 +47,13 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public class ServerEvents {
 	
-	private ExampleBlockNode blockNode = new ExampleBlockNode(Material.GRASS);
-	private ExampleBlockGenerator blockGenerator = new ExampleBlockGenerator(Material.GRASS);
-	private ExampleBlockConsumer blockConsumer = new ExampleBlockConsumer(Material.GRASS);
-	
-	private ExampleCreativeTab ect = new ExampleCreativeTab("rockycoretab");
-	
-	private ItemBlock itemNode = new ItemBlock(blockNode);
-	private ItemBlock itemGenerator = new ItemBlock(blockGenerator);
-	private ItemBlock itemConsumer = new ItemBlock(blockConsumer);
-	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<Block> event) {
-		blockNode.setRegistryName("rockycore:blocknode").setUnlocalizedName("blockNode");
-		blockGenerator.setRegistryName("rockycore:blockgenerator").setUnlocalizedName("blockGenerator");
-		blockConsumer.setRegistryName("rockycore:blockconsumer").setUnlocalizedName("blockConsumer");
-	    event.getRegistry().registerAll(blockNode, blockGenerator, blockConsumer);
+
 	}
 	
 	@SubscribeEvent
 	public void registerItems(RegistryEvent.Register<Item> event) {
-		itemNode.setRegistryName("rockycore:itemnode").setCreativeTab(ect).setUnlocalizedName("itemNode");
-		itemGenerator.setRegistryName("rockycore:itemgenerator").setCreativeTab(ect).setUnlocalizedName("itemGenerator");
-		itemConsumer.setRegistryName("rockycore:itemconsumer").setCreativeTab(ect).setUnlocalizedName("itemConsumer");
-		event.getRegistry().registerAll(itemNode, itemGenerator, itemConsumer);
 	}
 	
 	@SubscribeEvent
@@ -100,18 +79,18 @@ public class ServerEvents {
 	@SubscribeEvent
 	public void onWorldSave(WorldEvent.Save event){
 		if(event.getWorld().isRemote == true){
-			Debug.INSTANCE.debug("Client side thread detected, discarding WorldEvent.Save", EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Client side thread detected, discarding WorldEvent.Save", EnumDebugType.DEBUG);
 			return;
 		}
 		
-		Debug.INSTANCE.debug("Custom world data is now saving", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Custom world data is now saving", EnumDebugType.DEBUG);
 		
 		ArrayList<NBTTagCompound> cmpndData = ServerGameDataSaver.relay();
 		
 		MapStorage storage = event.getWorld().getMapStorage();
 		ServerWorldSavedData data = (ServerWorldSavedData) storage.getOrLoadData(ServerWorldSavedData.class, ServerWorldSavedData.NAME);
 		
-		Debug.INSTANCE.debug("Custom data: ", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Custom data: ", EnumDebugType.DEBUG);
 		
 		if (data == null) {
 		    data = new ServerWorldSavedData();
@@ -124,6 +103,6 @@ public class ServerEvents {
 		
 		data.debug();
 		
-		Debug.INSTANCE.debug("Saved world data", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Saved world data", EnumDebugType.DEBUG);
 	}
 }

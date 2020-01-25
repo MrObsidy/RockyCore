@@ -61,16 +61,16 @@ public class GridManagerRegistry {
 		ArrayList<GridManager> removables = new ArrayList<GridManager>();
 		int oldSize = GRID_MANAGERS.size();
 		for(GridManager man : GRID_MANAGERS) {
-			Debug.INSTANCE.debug("Checking GridManager of type " + man.getGridType(), EnumDebugType.INFO);
-			Debug.INSTANCE.debug("Amount of nodes of man: " + man.getNodes().size(), EnumDebugType.INFO);
-			Debug.INSTANCE.debug("Amount of generators of man: " + man.getGenerators().size(), EnumDebugType.INFO);
-			Debug.INSTANCE.debug("Amount of consumers of man: " + man.getConsumers().size(), EnumDebugType.INFO);
+			Debug.getDebugger().debug("Checking GridManager of type " + man.getGridType(), EnumDebugType.INFO);
+			Debug.getDebugger().debug("Amount of nodes of man: " + man.getNodes().size(), EnumDebugType.INFO);
+			Debug.getDebugger().debug("Amount of generators of man: " + man.getGenerators().size(), EnumDebugType.INFO);
+			Debug.getDebugger().debug("Amount of consumers of man: " + man.getConsumers().size(), EnumDebugType.INFO);
 			if(man.getNodes().size() == 0 && man.getConsumers().size() == 0 && man.getGenerators().size() == 0) {
 				removables.add(man);
 			}
 		}
 		GRID_MANAGERS.removeAll(removables);
-		Debug.INSTANCE.debug("Running garbage collection, removed " + (oldSize - GRID_MANAGERS.size()) + " empty GridManagers", EnumDebugType.WARNING);
+		Debug.getDebugger().debug("Running garbage collection, removed " + (oldSize - GRID_MANAGERS.size()) + " empty GridManagers", EnumDebugType.WARNING);
 		removables = null;
 	}
 	
@@ -106,7 +106,7 @@ public class GridManagerRegistry {
 	
 	public void removeNode(TileGridNode node){
 		
-		Debug.INSTANCE.debug("Node: " + node.toString(), EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Node: " + node.toString(), EnumDebugType.DEBUG);
 		
 		GridManager manager = null;
 		for(GridManager man : GRID_MANAGERS){
@@ -194,21 +194,21 @@ public class GridManagerRegistry {
 		this.consumerReconstructionList = new ArrayList<TileEntityConsumer>();
 		this.generatorReconstructionList = new ArrayList<TileEntityGenerator>();
 		this.reconstructionMode = true;
-		Debug.INSTANCE.debug("Done initializing reconstruction", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done initializing reconstruction", EnumDebugType.INFO);
 	}
 	
 	private void addNodeToReconstructionList(TileGridNode node) {
-		Debug.INSTANCE.debug("Adding node @" + node.getPos().toString() + " to reconstruction list", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Adding node @" + node.getPos().toString() + " to reconstruction list", EnumDebugType.DEBUG);
 		this.nodeReconstructionList.add(node);
 	}
 	
 	private void addConsumerToReconstructionList(TileEntityConsumer consumer) {
-		Debug.INSTANCE.debug("Adding a consumer @ " + consumer.getPos().toString() + " to the reconstruction list", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Adding a consumer @ " + consumer.getPos().toString() + " to the reconstruction list", EnumDebugType.DEBUG);
 		this.consumerReconstructionList.add(consumer);
 	}
 
 	private void addGeneratorToReconstructionList(TileEntityGenerator generator) {
-		Debug.INSTANCE.debug("Adding a generator @ " + generator.getPos().toString() + " to the reconstruction list", EnumDebugType.DEBUG);
+		Debug.getDebugger().debug("Adding a generator @ " + generator.getPos().toString() + " to the reconstruction list", EnumDebugType.DEBUG);
 		this.generatorReconstructionList.add(generator);
 	}
 	
@@ -216,26 +216,26 @@ public class GridManagerRegistry {
 		
 		this.reconstructionMode = false;
 		
-		Debug.INSTANCE.debug("Reconstructing, this may take a moment", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Reconstructing, this may take a moment", EnumDebugType.INFO);
 		for(TileGridNode node : this.nodeReconstructionList) {
-			Debug.INSTANCE.debug("Reconstructing node @ " + node.getPos().toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Reconstructing node @ " + node.getPos().toString(), EnumDebugType.DEBUG);
 			this.addNode(node);
 		}
 		
-		Debug.INSTANCE.debug("Done with node reconstruction, reconstructing consumers..", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done with node reconstruction, reconstructing consumers..", EnumDebugType.INFO);
 		for(TileEntityConsumer consumer : this.consumerReconstructionList) {
-			Debug.INSTANCE.debug("Reconstructing node @ " + consumer.getPos().toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Reconstructing node @ " + consumer.getPos().toString(), EnumDebugType.DEBUG);
 			this.addConsumer(consumer);
 		}
 		
-		Debug.INSTANCE.debug("Done with consumer reconstruction, reconstructing generators..", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done with consumer reconstruction, reconstructing generators..", EnumDebugType.INFO);
 		for(TileEntityGenerator generator : this.generatorReconstructionList) {
-			Debug.INSTANCE.debug("Reconstructing node @ " + generator.getPos().toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Reconstructing node @ " + generator.getPos().toString(), EnumDebugType.DEBUG);
 			this.addGenerator(generator);
 		}
 		
-		Debug.INSTANCE.debug("Done with reconstruction.", EnumDebugType.INFO);
-		Debug.INSTANCE.debug("Resetting reconstruction ArrayLists...", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done with reconstruction.", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Resetting reconstruction ArrayLists...", EnumDebugType.INFO);
 		
 		this.nodeReconstructionList = null;
 		this.consumerReconstructionList = null;
@@ -258,7 +258,7 @@ public class GridManagerRegistry {
 		}
 		
 		if(nMan != null){
-			Debug.INSTANCE.debug("found manager, retrieving node...", EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("found manager, retrieving node...", EnumDebugType.DEBUG);
 			returnNode = nMan.getNodeAtPos(pos, world);
 		} else {
 			returnNode = null;
@@ -269,7 +269,7 @@ public class GridManagerRegistry {
 	
 	public void relayPacket(String gridType){
 		for(GridManager man : GRID_MANAGERS){
-			if(man.getGridType() == gridType){
+			if(man.getGridType().contentEquals(gridType)){
 				man.triggerPacket();
 				break;
 			}
@@ -279,7 +279,7 @@ public class GridManagerRegistry {
 	public ArrayList<TileEntityConsumer> getSurroundingConsumers(BlockPos pos, int dim, String gridType) {
 		ArrayList<TileEntityConsumer> consumers = new ArrayList<TileEntityConsumer>();
 		for(GridManager manager : GRID_MANAGERS){
-			if(manager.getGridType() == gridType){
+			if(manager.getGridType().contentEquals(gridType)){
 				consumers = manager.getSurroundingConsumers(pos, dim);
 				break;
 			}
@@ -291,10 +291,11 @@ public class GridManagerRegistry {
 	public ArrayList<TileGridNode> getSurroundingNodes(BlockPos pos, int dim, String gridType){
 		ArrayList<TileGridNode> nodes = new ArrayList<TileGridNode>();
 		for(GridManager manager : GRID_MANAGERS){
-			if(manager.getGridType() == gridType){
-				nodes = manager.getSurroundingNodes(pos, dim);
+			if(manager.getGridType().contentEquals(gridType)){
 				
-				Debug.INSTANCE.debug("Found manager: " + manager.getGridType(), EnumDebugType.DEBUG);
+				Debug.getDebugger().debug("Found manager: " + manager.getGridType(), EnumDebugType.DEBUG);
+				
+				nodes = manager.getSurroundingNodes(pos, dim);
 				break;
 			}
 		}
@@ -311,7 +312,7 @@ public class GridManagerRegistry {
 			man.flush();
 		}
 		
-		Debug.INSTANCE.debug("Removed all old managers, starting reconstruction...", EnumDebugType.WARNING);
+		Debug.getDebugger().debug("Removed all old managers, starting reconstruction...", EnumDebugType.WARNING);
 		
 		this.GRID_MANAGERS.clear();
 		
@@ -320,8 +321,8 @@ public class GridManagerRegistry {
 		for(WorldServer w : RegistryRegistry.getServerRegistry().getServer().worlds) {
 			entities.addAll(w.loadedTileEntityList);
 		}
-		Debug.INSTANCE.debug("Retrieved all TileEntities, size: " + entities.size(), EnumDebugType.INFO);
-		Debug.INSTANCE.debug("(The bigger this number, the more lag you can expect)", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Retrieved all TileEntities, size: " + entities.size(), EnumDebugType.INFO);
+		Debug.getDebugger().debug("(The bigger this number, the more lag you can expect)", EnumDebugType.INFO);
 		
 		ArrayList<TileGridNode> nodes = new ArrayList<TileGridNode>();
 		ArrayList<TileEntityConsumer> cons = new ArrayList<TileEntityConsumer>();
@@ -329,20 +330,20 @@ public class GridManagerRegistry {
 		
 		for(TileEntity entity : entities) {
 			
-			Debug.INSTANCE.debug("Checking TileEntity of type: " + entity.toString(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Checking TileEntity of type: " + entity.toString(), EnumDebugType.DEBUG);
 			
 			if(entity instanceof TileGridNode) nodes.add((TileGridNode) entity);
 			if(entity instanceof TileEntityConsumer) cons.add((TileEntityConsumer) entity);
 			if(entity instanceof TileEntityGenerator) gens.add((TileEntityGenerator) entity);
 		}
 		
-		Debug.INSTANCE.debug("Done sorting Consumers, Generators and Nodes.", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done sorting Consumers, Generators and Nodes.", EnumDebugType.INFO);
 		
-		Debug.INSTANCE.debug("Amount of consumers found: " + cons.size(), EnumDebugType.INFO);
-		Debug.INSTANCE.debug("Amoung of generators found: " + gens.size(), EnumDebugType.INFO);
-		Debug.INSTANCE.debug("Amount of nodes found: " + nodes.size(), EnumDebugType.INFO);
+		Debug.getDebugger().debug("Amount of consumers found: " + cons.size(), EnumDebugType.INFO);
+		Debug.getDebugger().debug("Amoung of generators found: " + gens.size(), EnumDebugType.INFO);
+		Debug.getDebugger().debug("Amount of nodes found: " + nodes.size(), EnumDebugType.INFO);
 		
-		Debug.INSTANCE.debug("Re-adding everything...", EnumDebugType.WARNING);
+		Debug.getDebugger().debug("Re-adding everything...", EnumDebugType.WARNING);
 		
 		for(TileGridNode node: nodes) {
 			this.addNode(node);
@@ -356,13 +357,13 @@ public class GridManagerRegistry {
 			this.addConsumer(con);
 		}
 		
-		Debug.INSTANCE.debug("Done registering. Forcing packet sending..", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Done registering. Forcing packet sending..", EnumDebugType.INFO);
 		
 		for(GridManager man : this.GRID_MANAGERS) {
-			Debug.INSTANCE.debug("Triggering packet for " + man.getGridType(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Triggering packet for " + man.getGridType(), EnumDebugType.DEBUG);
 			man.triggerPacket();
 		}
 		
-		Debug.INSTANCE.debug("Done. The game should be done lagging now.", EnumDebugType.WARNING);
+		Debug.getDebugger().debug("Done. The game should be done lagging now.", EnumDebugType.WARNING);
 	}
 }

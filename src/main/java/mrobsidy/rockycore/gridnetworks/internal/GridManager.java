@@ -51,7 +51,7 @@ public class GridManager {
 	
 	public GridManager(String type){
 		
-		Debug.INSTANCE.debug("Created new GridManager", EnumDebugType.INFO);
+		Debug.getDebugger().debug("Created new GridManager", EnumDebugType.INFO);
 		
 		this.gridType = type;
 		this.nodes = new ArrayList<TileGridNode>();
@@ -61,7 +61,7 @@ public class GridManager {
 	
 	public void triggerPacket(){
 		for(TileEntityGenerator generator : generators){
-			Debug.INSTANCE. debug("Sending packets for type " + this.gridType, EnumDebugType.INFO);
+			Debug.getDebugger().debug("Sending packets for type " + this.gridType, EnumDebugType.INFO);
 			generator.sendPacket();
 		}
 	}
@@ -79,20 +79,22 @@ public class GridManager {
 	}
 	
 	public ArrayList<TileGridNode> getSurroundingNodes(BlockPos position, int dimension){
-		ArrayList<TileGridNode> nodes = new ArrayList<TileGridNode>();
+		ArrayList<TileGridNode> surrNodes = new ArrayList<TileGridNode>();
+		
+		Debug.getDebugger().debug("Appropriate getSurroundingNodes() method called in GrMan: " + this.gridType, EnumDebugType.DEBUG);
 		
 		BlockHelper[] helpers = MiscUtil.getSurroundingBlocks(position, dimension);
 		for(TileGridNode pNode : this.nodes){
 			for(BlockHelper helper : helpers){
-				Debug.INSTANCE.debug("Checking node @ " + pNode.getPos().toString() + " of " + this.nodes.size(), EnumDebugType.DEBUG);
+				Debug.getDebugger().debug("Checking node @ " + pNode.getPos().toString() + " of " + this.nodes.size(), EnumDebugType.DEBUG);
 				if(pNode.getPos().getX() == helper.getPos().getX() && pNode.getPos().getY() == helper.getPos().getY() && pNode.getPos().getZ() == helper.getPos().getZ() && dimension == pNode.getWorld().provider.getDimension()){
-					Debug.INSTANCE.debug("Found node.", EnumDebugType.DEBUG);
-					nodes.add(pNode);
+					Debug.getDebugger().debug("Found node.", EnumDebugType.DEBUG);
+					surrNodes.add(pNode);
 				}
 			}
 		}
 		
-		return nodes;
+		return surrNodes;
 	}
 	
 	public ArrayList<TileEntityConsumer> getSurroundingConsumers(BlockPos position, int dimension){
@@ -100,10 +102,10 @@ public class GridManager {
 		
 		BlockHelper[] helpers = MiscUtil.getSurroundingBlocks(position, dimension);
 		for(TileEntityConsumer consumer : this.consumers){
-			Debug.INSTANCE.debug("Checking consumer @ " + consumer.getPos().toString() + " of " + this.consumers.size(), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Checking consumer @ " + consumer.getPos().toString() + " of " + this.consumers.size(), EnumDebugType.DEBUG);
 			for(BlockHelper helper : helpers){
 				if(consumer.getPos().getX() == helper.getPos().getX() && consumer.getPos().getY() == helper.getPos().getY() && consumer.getPos().getZ() == helper.getPos().getZ() && dimension == consumer.getWorld().provider.getDimension()){
-					Debug.INSTANCE.debug("Found consumer.", EnumDebugType.DEBUG);
+					Debug.getDebugger().debug("Found consumer.", EnumDebugType.DEBUG);
 					consumers.add(consumer);
 				}
 			}
@@ -126,14 +128,14 @@ public class GridManager {
 		
 		for(TileGridNode n : nodes) {
 			if(n.getPos().getX() == node.getPos().getX() && n.getPos().getY() == node.getPos().getY() && n.getPos().getZ() == node.getPos().getZ() && node.getWorld().provider.getDimension() == n.getWorld().provider.getDimension()) {
-				Debug.INSTANCE.debug("Found node to remove", EnumDebugType.INFO);
+				Debug.getDebugger().debug("Found node to remove", EnumDebugType.INFO);
 				success = nodes.remove(n);
 				break;
 			}
 		}
 		
 
-		if(!success) Debug.INSTANCE.debug("Could not remove node @ " + node.getPos().toString(), EnumDebugType.ERROR);
+		if(!success) Debug.getDebugger().debug("Could not remove node @ " + node.getPos().toString(), EnumDebugType.ERROR);
 	}
 	
 	public void addGenerator(TileEntityGenerator generator){
@@ -145,14 +147,14 @@ public class GridManager {
 		
 		for(TileEntityGenerator n : generators) {
 			if(n.getPos().getX() == node.getPos().getX() && n.getPos().getY() == node.getPos().getY() && n.getPos().getZ() == node.getPos().getZ() && node.getWorld().provider.getDimension() == n.getWorld().provider.getDimension()) {
-				Debug.INSTANCE.debug("Found generator to remove.", EnumDebugType.DEBUG);
+				Debug.getDebugger().debug("Found generator to remove.", EnumDebugType.DEBUG);
 				success = generators.remove(n);
 				break;
 			}
 		}
 		
 
-		if(!success) Debug.INSTANCE.debug("Could not remove generator @ " + node.getPos().toString(), (EnumDebugType.ERROR));
+		if(!success) Debug.getDebugger().debug("Could not remove generator @ " + node.getPos().toString(), (EnumDebugType.ERROR));
 	}
 	
 	public void addConsumer(TileEntityConsumer consumer){
@@ -164,13 +166,13 @@ public class GridManager {
 		
 		for(TileEntityConsumer n : consumers) {
 			if(n.getPos().getX() == node.getPos().getX() && n.getPos().getY() == node.getPos().getY() && n.getPos().getZ() == node.getPos().getZ() && node.getWorld().provider.getDimension() == n.getWorld().provider.getDimension()) {
-				Debug.INSTANCE.debug("Found consumer to remove", EnumDebugType.DEBUG);
+				Debug.getDebugger().debug("Found consumer to remove", EnumDebugType.DEBUG);
 				success = consumers.remove(n);
 				break;
 			}
 		}
 		
-		if(!success) Debug.INSTANCE.debug("Could not remove consumer @ " + node.getPos().toString(), EnumDebugType.ERROR);
+		if(!success) Debug.getDebugger().debug("Could not remove consumer @ " + node.getPos().toString(), EnumDebugType.ERROR);
 	}
 	
 	public ArrayList<TileGridNode> getNodes() {
@@ -196,8 +198,8 @@ public class GridManager {
 		
 		for(TileGridNode node : nodes){
 			
-			Debug.INSTANCE.debug("Pos = pos: " + (node.getPos().getX() == pos.getX() && node.getPos().getY() == pos.getY() && node.getPos().getZ() == pos.getZ()), EnumDebugType.DEBUG);
-			Debug.INSTANCE.debug("Dimension = dimension: " + (node.getWorld().provider.getDimension() == world.provider.getDimension()), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Pos = pos: " + (node.getPos().getX() == pos.getX() && node.getPos().getY() == pos.getY() && node.getPos().getZ() == pos.getZ()), EnumDebugType.DEBUG);
+			Debug.getDebugger().debug("Dimension = dimension: " + (node.getWorld().provider.getDimension() == world.provider.getDimension()), EnumDebugType.DEBUG);
 			
 			if(node.getPos().getX() == pos.getX() && node.getPos().getY() == pos.getY() && node.getPos().getZ() == pos.getZ() && node.getWorld().provider.getDimension() == world.provider.getDimension()){
 				returnNode = node;
