@@ -14,6 +14,9 @@ public class CatenaryHelper {
 	 * @param ropeLength - the length of the rope connecting the two points
 	 * @param resolution - the amount of vertices this method returns
 	 * @return an array of length resolution that contains the vectors to the points of the catenary.
+	 * 
+	 * 
+	 * This method is based heavily off of the getConnectionCatenary() function from https://github.com/BluSunrize/ImmersiveEngineering/blob/1.14/src/main/java/blusunrize/immersiveengineering/api/ApiUtils.java#L457 .
 	 */
 	public static Vector[] getCatenaryCurve(Vector starting, Vector ending, double slack, int resolution) {
 		if(starting.getDimension() != ending.getDimension()) return null;
