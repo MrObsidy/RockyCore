@@ -25,11 +25,12 @@
 
 package mrobsidy.rockycore.init;
 
-import mrobsidy.rockycore.gridnetworks.api.TileGridNode;
 import mrobsidy.rockycore.misc.CommandRockyCore;
 import mrobsidy.rockycore.misc.debug.Debug;
 import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
 import mrobsidy.rockycore.util.client.ClientEvents;
+import mrobsidy.rockycore.util.math.Vector;
+import mrobsidy.rockycore.util.math.VectorUtils;
 import mrobsidy.rockycore.util.server.ServerEvents;
 import mrobsidy.rockycore.util.server.ServerGameDataSaver;
 import net.minecraft.block.Block;
@@ -76,7 +77,6 @@ public class RockyCore {
 		
 		System.out.println("[RockyCore] preInit event received");
 		
-		GameRegistry.registerTileEntity(TileGridNode.class, "rockycore:tilegridnode");
 		
 		MinecraftForge.EVENT_BUS.register(new ServerEvents());
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT)
@@ -90,7 +90,6 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event){
 		System.out.println("[RockyCore] init event received");
-		RegistryRegistry.constructGridManagerRegistry();
 		RegistryRegistry.constructMultiblockRegistry();
 		
 		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
@@ -101,7 +100,6 @@ public class RockyCore {
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event){
 		System.out.println("[RockyCore] postInit event received");
-		RegistryRegistry.getGridManagerRegistry().initReconstruction();
 	}
 	
 	public void serverAboutToStart(FMLServerAboutToStartEvent event){
@@ -115,11 +113,6 @@ public class RockyCore {
 		System.out.println("[RockyCore] serverStart event received");
 		RegistryRegistry.setServerRegistry(event.getServer());
 		event.registerServerCommand(new CommandRockyCore());
-		
-		RegistryRegistry.getGridManagerRegistry().reconstruct();
-		RegistryRegistry.getGridManagerRegistry().garbageCollection();
-	
-		
 	}
 	
 	@Mod.EventHandler
@@ -132,7 +125,6 @@ public class RockyCore {
 		System.out.println("[RockyCore] serverStopping event received");
 		//ServerGameDataSaver.saveObjectsToDisk(RegistryRegistry.getGridRegistry().getGridManagers(), "data/gridData/gridData.dat");
 		RegistryRegistry.initAndReset();
-		RegistryRegistry.constructGridManagerRegistry();
 		RegistryRegistry.constructMultiblockRegistry();
 	}
 	

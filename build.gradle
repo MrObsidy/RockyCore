@@ -34,6 +34,8 @@ minecraft {
 }
 
 dependencies {
+    compile files("/home/alexander/forgedev/RockyCore/run/mods/RockyCore-1.12.2-1.0.0-rc1.jar")
+
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

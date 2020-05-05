@@ -5,7 +5,7 @@
         "description": "A core lbrary mod used by all my mods.",
         "version": "${version}",
         "credits": "MrObsidy24",
-        "mcversion": "${mc_version}",
+        "mcversion": "1.12.2",
         "url": "https://github.com/MrObsidy/RockyCore",
         "updateUrl": "https://raw.githubusercontent.com/MrObsidy/technical-data-inf/master/rockycore/update.json",
         "authorList": [ "MrObsidy" ],

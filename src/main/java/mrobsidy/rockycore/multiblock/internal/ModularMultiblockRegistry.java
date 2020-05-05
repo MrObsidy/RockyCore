@@ -9,8 +9,9 @@ import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
 import mrobsidy.rockycore.multiblock.api.IMultiblockBase;
 import mrobsidy.rockycore.multiblock.api.IMultiblockComponent;
 import mrobsidy.rockycore.util.misc.helpers.BlockHelper;
-import mrobsidy.rockycore.util.misc.helpers.BlockPosHelper;
+import mrobsidy.rockycore.util.misc.helpers.BlockUtil;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 
 public class ModularMultiblockRegistry {
 	
@@ -63,7 +64,7 @@ public class ModularMultiblockRegistry {
 			IMultiblockComponent toRemove = null;
 			
 			for(IMultiblockComponent component : this.components) {
-				if(BlockPosHelper.comparePositions(component.getPos(), pos, this.dim, this.dim)) {
+				if(BlockUtil.comparePositions(component.getPos(), pos, this.dim, this.dim)) {
 					toRemove = component;
 				}
 			}
@@ -104,12 +105,12 @@ public class ModularMultiblockRegistry {
 		
 		ArrayList<MultiblockContainer> foundContainers = new ArrayList<MultiblockContainer>();
 		
-		BlockHelper[] surrPos = MiscUtil.getSurroundingBlocks(comp.getPos(), comp.getWorld().provider.getDimension());
+		BlockHelper[] surrPos = BlockUtil.getSurroundingBlocks(comp.getPos(), (WorldServer) comp.getWorld());
 		
 		for(MultiblockContainer cont : this.multiblocks) {
 			for(BlockPos pos : cont.getPositions()) {
 				for(BlockHelper wrap : surrPos) {
-					if(BlockPosHelper.comparePositions(wrap.getPos(), pos, comp.getWorld().provider.getDimension(), cont.getDim())) {
+					if(BlockUtil.comparePositions(wrap.getPos(), pos, comp.getWorld().provider.getDimension(), cont.getDim())) {
 						foundContainers.add(cont);
 						Debug.getDebugger().debug("Found a container!", EnumDebugType.DEBUG);
 					}
@@ -150,7 +151,7 @@ public class ModularMultiblockRegistry {
 		
 		for(MultiblockContainer cont : this.multiblocks) {
 			for(BlockPos thisPos : cont.getPositions()) {
-				if(BlockPosHelper.comparePositions(thisPos, comp.getPos(), cont.getDim(), comp.getWorld().provider.getDimension())) {
+				if(BlockUtil.comparePositions(thisPos, comp.getPos(), cont.getDim(), comp.getWorld().provider.getDimension())) {
 					Debug.getDebugger().debug("Found structure, removing..", EnumDebugType.INFO);
 					cont.removeComponentAtPos(comp.getPos());
 					success = true;
@@ -171,12 +172,12 @@ public class ModularMultiblockRegistry {
 		
 		ArrayList<MultiblockContainer> foundContainers = new ArrayList<MultiblockContainer>();
 		
-		BlockHelper[] surrPos = MiscUtil.getSurroundingBlocks(base.getPos(), base.getWorld().provider.getDimension());
+		BlockHelper[] surrPos = BlockUtil.getSurroundingBlocks(base.getPos(), (WorldServer) base.getWorld());
 		
 		for(MultiblockContainer cont : this.multiblocks) {
 			for(BlockPos pos : cont.getPositions()) {
 				for(BlockHelper wrap : surrPos) {
-					if(BlockPosHelper.comparePositions(wrap.getPos(), pos, base.getWorld().provider.getDimension(), cont.getDim())) {
+					if(BlockUtil.comparePositions(wrap.getPos(), pos, base.getWorld().provider.getDimension(), cont.getDim())) {
 						Debug.getDebugger().debug("Found a container!", EnumDebugType.DEBUG);
 						foundContainers.add(cont);
 					}
@@ -216,7 +217,7 @@ public class ModularMultiblockRegistry {
 		boolean success = false;
 		
 		for(MultiblockContainer cont : this.multiblocks) {
-			if(BlockPosHelper.comparePositions(cont.getBase().getPos(), base.getPos(), cont.getDim(), base.getWorld().provider.getDimension())) {
+			if(BlockUtil.comparePositions(cont.getBase().getPos(), base.getPos(), cont.getDim(), base.getWorld().provider.getDimension())) {
 				Debug.getDebugger().debug("Found multiblock. removing..", EnumDebugType.INFO);
 				cont.setBase(null);
 				success = true;

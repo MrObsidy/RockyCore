@@ -29,7 +29,7 @@ import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.util.misc.helpers.BlockHelper;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 public class MiscUtil {
 	
@@ -40,26 +40,8 @@ public class MiscUtil {
 	 * @param dim
 	 * @return
 	 */
-	@Deprecated
-	public static World getServerWorld(int dim) {
+	public static WorldServer getServerWorld(int dim) {
 		return RegistryRegistry.getServerRegistry().getServer().getWorld(dim);
-	}
-	
-	public static BlockHelper getBlockAtPos(BlockPos pos, int dim){
-		return new BlockHelper(getServerWorld(dim).getBlockState(pos).getBlock(), pos);
-	}
-	
-	public static BlockHelper[] getSurroundingBlocks(BlockPos blockPos, int dim){
-		BlockHelper[] surroundingBlocks = new BlockHelper[6];
-		
-		surroundingBlocks[0] = getBlockAtPos(new BlockPos(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ()), dim);
-		surroundingBlocks[1] = getBlockAtPos(new BlockPos(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ()), dim);
-		surroundingBlocks[2] = getBlockAtPos(new BlockPos(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ()), dim);
-		surroundingBlocks[3] = getBlockAtPos(new BlockPos(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ()), dim);
-		surroundingBlocks[4] = getBlockAtPos(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1), dim);
-		surroundingBlocks[5] = getBlockAtPos(new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1), dim);
-
-		return surroundingBlocks;
 	}
 	
 	public static Class getClassForName(String name) throws ClassNotFoundException{

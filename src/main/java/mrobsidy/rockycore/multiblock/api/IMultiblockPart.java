@@ -14,6 +14,8 @@ public interface IMultiblockPart {
 	
 	public boolean getRemoved();
 	
-	//this is a one-way road
+	/**
+	 * this is a one-way road
+	 */
 	public void setRemoved();
 }

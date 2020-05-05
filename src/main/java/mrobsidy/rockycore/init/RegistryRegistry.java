@@ -33,7 +33,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.misc.MiscRegistry;
 import mrobsidy.rockycore.multiblock.internal.ModularMultiblockRegistry;
 import mrobsidy.rockycore.registries.api.IRegistry;
@@ -53,7 +52,6 @@ public class RegistryRegistry {
 	private static ServerRegistry serverRegistry;
 	private static ClientRegistry clientRegistry;
 	private static MiscRegistry miscRegistry;
-	private static GridManagerRegistry gridRegistry;
 	private static ModularMultiblockRegistry multiblockRegistry;
 	private static ArrayList<IRegistry> customRegistries = new ArrayList<IRegistry>();
 	
@@ -75,21 +73,12 @@ public class RegistryRegistry {
 		return returner;
 	}
 	
-	public static void constructGridManagerRegistry(){
-		gridRegistry = new GridManagerRegistry();
-		gridRegistry.initReconstruction();
-	}
-	
 	public static void constructMultiblockRegistry() {
 		multiblockRegistry = new ModularMultiblockRegistry();
 	}
 	
 	public static ModularMultiblockRegistry getMultiblockRegistry() {
 		return multiblockRegistry;
-	}
-	
-	public static GridManagerRegistry getGridManagerRegistry(){
-		return gridRegistry;
 	}
 	
 	public static boolean removeCustomRegistry(IRegistry reg){
@@ -125,10 +114,9 @@ public class RegistryRegistry {
 		if(!initFirstTime) initFirstTime = false; //Initialize
 		serverRegistrySetForCurrentSession = false; //Reset this
 		serverRegistry = null; //in any case, reset the server registry
-		gridRegistry = null; //reset this too
 		multiblockRegistry = null; //and this
 		for(IRegistry registry : customRegistries){
-			registry.reset();
+			if(registry.shouldReset()) registry.reset();
 		}
 		if(!initFirstTime && FMLCommonHandler.instance().getSide() == Side.CLIENT) clientRegistry = null; //if we're initializing and we are on a client, initialize it
 		if(!initFirstTime) initFirstTime = true; //if this is the fist time initializing, set a marker that the next call of this function isn't the first time this function is being called

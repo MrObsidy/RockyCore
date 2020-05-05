@@ -27,7 +27,6 @@ package mrobsidy.rockycore.util.server;
 
 import java.util.ArrayList;
 
-import mrobsidy.rockycore.gridnetworks.internal.GridManagerRegistry;
 import mrobsidy.rockycore.init.RegistryRegistry;
 import mrobsidy.rockycore.misc.debug.Debug;
 import mrobsidy.rockycore.misc.debug.api.EnumDebugType;
